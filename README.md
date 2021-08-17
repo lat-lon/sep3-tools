@@ -1,2 +1,2 @@
 # sep3-tools
-SEP3-Tools 
+Tools for processing SEP 3 geological data.
