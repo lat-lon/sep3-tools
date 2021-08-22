@@ -1,6 +1,6 @@
-package org.sep3_tools;
+package org.sep3tools;
 
-import org.sep3_tools.gen.*;
+import org.sep3tools.gen.*;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.ParseTree;
