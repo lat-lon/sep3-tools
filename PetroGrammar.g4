@@ -3,23 +3,15 @@ grammar PetroGrammar;
 schichtbeschreibung: bestandteile;
 
 bestandteile:
-    bestandteile ',' bestandteile     # Aufzaehlung_b
+    bestandteil ( '(' attribute ')' )?    # Teil
+    | bestandteile ',' bestandteile     # Aufzaehlung_b
     | uebergang_bes ( '(' attribute ')' )?  # Uebergang_b
-    | bestandteil ( '(' attribute ')' )?    # Teil
+
 ;
 
 uebergang_bes: b1=bestandteil '-' b2=bestandteil;
 
-bestandteil:
-    BODEN               # bod_bek
-    | UNBEKANNT         # bod_unbek
-    ;
-
-BODEN:
-    '^gs'
-    | '^ms'
-    | '^u'
-    ;
+bestandteil: TEIL;
 
 attribute:
     attribut                                    # att
@@ -51,7 +43,8 @@ ATTRIBUT:
     ;
 
 TIEFE: ([0-9]|'.')+;
+TEIL: ANY+;
 UNBEKANNT: ANY+;
-ANY: [a-z]|[A-Z]|[0-9]|'^';
+ANY: [a-z]|[A-Z]|[0-9]|'^'|'*'|'+';
 FRAGLICH: '?';
 SICHER: '!';
