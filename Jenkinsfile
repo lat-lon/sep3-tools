@@ -5,7 +5,7 @@ pipeline {
     jdk 'openjdk16'
   }
   parameters {
-    string(defaultValue: "master", description: 'Set git branch', name: 'BRANCH')
+    string(defaultValue: "main", description: 'Set git branch', name: 'BRANCH')
   }
   stages {
     stage('Preparation') {
@@ -26,7 +26,7 @@ pipeline {
     stage('Deploy') {
       when {
         expression {
-          return params.BRANCH == 'master'
+          return params.BRANCH == 'main'
         }
       }
       steps{
