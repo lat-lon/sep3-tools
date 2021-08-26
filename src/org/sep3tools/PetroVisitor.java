@@ -1,16 +1,43 @@
 package org.sep3tools;
 
-import org.sep3tools.gen.*;
+import org.sep3tools.gen.PetroGrammarBaseVisitor;
+import org.sep3tools.gen.PetroGrammarParser;
 
-public class PetroVisitor extends PetroGrammarBaseVisitor<String>{
+import java.sql.*;
 
+import static java.util.Objects.isNull;
+
+public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
+
+    private String getS3ResultSet (String searchTerm){
+         final String DB_URL = "jdbc:postgresql://localhost/petroparser";
+         final String USER = "petroparser";
+         final String PASS = "PetroParser";
+         final String QUERY = "SELECT sep3_term from bml.bml_schluesselmapping where bml_codelist='RockNameList' and sep3_code=";
+
+         try {
+            Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
+
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(QUERY+"'"+searchTerm+"'");
+             rs.next();
+             return rs.getString("sep3_term");
+        }  catch (SQLException e) {
+            System.out.println("Connection failure.");
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     @Override public String visitSchichtbeschreibung(PetroGrammarParser.SchichtbeschreibungContext ctx) {
         return visitChildren(ctx);
     }
 
-    @Override public String visitBod_bek(PetroGrammarParser.Bod_bekContext ctx) {
-        String boden = ctx.BODEN().getText();
+    @Override public String visitBestandteil(PetroGrammarParser.BestandteilContext ctx) {
+        String boden = ctx.getText();
+        String bodenTerm = getS3ResultSet(boden);
+        if (!isNull(bodenTerm)) return bodenTerm;
+
         return switch (boden) {
             case "^u" -> "Schluff";
             case "^ms" -> "Mittelsandstein";
@@ -44,6 +71,9 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String>{
 
     @Override public String visitTeil(PetroGrammarParser.TeilContext ctx) {
         String teil = visit(ctx.bestandteil());
+
+        if (ctx.attribute() == null) return teil;
+
         String attr = visit(ctx.attribute());
         if (attr.startsWith(" (")) return teil + attr;
         return teil + " (" + attr + ")";
