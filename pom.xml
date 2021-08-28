@@ -65,6 +65,35 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <!--version>2.6</version-->
+        <configuration>
+          <archive>
+            <manifest>
+              <!-- This identifies and version-stamps the jar.
+                 Not essential, but easy and useful. -->
+              <addDefaultImplementationEntries>
+                true
+              </addDefaultImplementationEntries>
+            </manifest>
+
+            <manifestSections>
+              <!-- This identifies a file in the jar named
+                 pljava.ddr as an SQLJDeploymentDescriptor. -->
+              <manifestSection>
+                <name>pljava.ddr</name>
+                <manifestEntries>
+                  <SQLJDeploymentDescriptor>
+                    true
+                  </SQLJDeploymentDescriptor>
+                </manifestEntries>
+              </manifestSection>
+            </manifestSections>
+          </archive>
+        </configuration>
+      </plugin>
         </plugins>
     </build>
 
@@ -79,6 +108,11 @@
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>pljava-api</artifactId>
+            <version>1.6.2</version>
         </dependency>
     </dependencies>
 </project>
