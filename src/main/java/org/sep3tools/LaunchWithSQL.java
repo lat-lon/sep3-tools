@@ -1,4 +1,4 @@
-package main.java.org.sep3tools;
+package org.sep3tools;
 
 import java.sql.*;
 
@@ -15,11 +15,10 @@ public class LaunchWithSQL {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(QUERY+"'^bio'");
             resultSet.next();
-            System.out.println ( resultSet.getString("sep3_term"));
-            while (resultSet.next()) {
+            while (!resultSet.isLast()) {
                 System.out.println ( resultSet.getString("sep3_term"));
+                resultSet.next();
             }
-
         }  catch (SQLException e) {
             System.out.println("Connection failure.");
             e.printStackTrace();
