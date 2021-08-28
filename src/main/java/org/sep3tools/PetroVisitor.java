@@ -11,7 +11,7 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
     private static String getS3ResultSet (String searchTerm){
         try {
-            PLJavaConnector.getS3Name(searchTerm);
+            return PLJavaConnector.getS3Name(searchTerm);
         } catch (SQLException e) {
             e.printStackTrace();
         }
