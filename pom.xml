@@ -38,6 +38,17 @@
         <url>https://github.com/lat-lon/sep3-tools/issues</url>
     </issueManagement>
 
+    <distributionManagement>
+        <repository>
+            <id>latlon-deploy</id>
+            <url>https://repo.lat-lon.de/repository/sep3tools-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>latlon-deploy</id>
+            <url>https://repo.lat-lon.de/repository/sep3tools-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <build>
         <plugins>
             <plugin>
