@@ -33,10 +33,30 @@
         <tag>HEAD</tag>
     </scm>
 
+    <repositories>
+        <repository>
+            <id>latlon</id>
+            <url>https://repo.lat-lon.de/repository/maven-public/</url>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
     <issueManagement>
         <system>github</system>
         <url>https://github.com/lat-lon/sep3-tools/issues</url>
     </issueManagement>
+
+    <pluginRepositories>
+        <pluginRepository>
+            <id>latlon</id>
+            <url>https://repo.lat-lon.de/repository/maven-public/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
     <distributionManagement>
         <repository>
