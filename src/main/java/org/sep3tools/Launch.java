@@ -1,6 +1,8 @@
 package org.sep3tools;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.sep3tools.gen.PetroGrammarLexer;
@@ -15,8 +17,7 @@ public class Launch {
     }
 
     public static String parseS3( String s3String ) {
-
-        ANTLRInputStream input = new ANTLRInputStream( s3String );
+        CharStream input = CharStreams.fromString( s3String );
         PetroGrammarLexer lexer = new PetroGrammarLexer( input );
         CommonTokenStream tokens = new CommonTokenStream( lexer );
         PetroGrammarParser parser = new PetroGrammarParser( tokens );
