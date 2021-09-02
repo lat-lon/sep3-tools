@@ -2,18 +2,22 @@ package org.sep3tools;
 
 import org.sep3tools.gen.PetroGrammarBaseVisitor;
 import org.sep3tools.gen.PetroGrammarParser;
+import org.slf4j.Logger;
 
-import java.sql.*;
+import java.sql.SQLException;
 
 import static java.util.Objects.isNull;
+import static org.slf4j.LoggerFactory.getLogger;
 
 public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
+
+    private static final Logger LOG = getLogger( PetroVisitor.class );
 
     private static String getS3ResultSet (String searchTerm){
         try {
             return PLJavaConnector.getS3Name(searchTerm);
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOG.warn( "Dictionary is not available, fallback to internal dictionary if possible." );
         }
         return null;
     }
