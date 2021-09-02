@@ -9,21 +9,10 @@ import static java.util.Objects.isNull;
 
 public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
-    private String getS3ResultSet (String searchTerm){
-         final String DB_URL = "jdbc:postgresql://localhost/petroparser";
-         final String USER = "petroparser";
-         final String PASS = "PetroParser";
-         final String QUERY = "SELECT sep3_term from bml.bml_schluesselmapping where bml_codelist='RockNameList' and sep3_code=";
-
-         try {
-            Connection connection = DriverManager.getConnection(DB_URL, USER, PASS);
-
-            Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(QUERY+"'"+searchTerm+"'");
-             rs.next();
-             return rs.getString("sep3_term");
-        }  catch (SQLException e) {
-            System.out.println("Connection failure.");
+    private static String getS3ResultSet (String searchTerm){
+        try {
+            return PLJavaConnector.getS3Name(searchTerm);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
