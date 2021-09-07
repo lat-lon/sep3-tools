@@ -9,7 +9,7 @@ Tools for processing SEP 3 geological data.
 
 ### Woerterbuch data
 
-Download Woerterbuch data from https://www.lbeg.niedersachsen.de/karten_daten_publikationen/bohrdatenbank/sep_3/softwaredownloads/software-downloads-875.html as follows:
+Download dictionary ("Woerterbuch") data from https://www.lbeg.niedersachsen.de/karten_daten_publikationen/bohrdatenbank/sep_3/softwaredownloads/software-downloads-875.html as follows:
 
 - "Schlüssellisten mit Kürzeln und zugehörigem Klartext und Typisierungen" - "Wörterbuch" - "Juli 2021"
 
@@ -31,6 +31,26 @@ sep3=# \i /tmp/Schluesseltypen_create-table.sql
 sep3=# \copy "Schluesseltypen" from '/tmp/Schluesseltypen.csv' CSV HEADER
 sep3=# \i /tmp/Woerterbuch_create-table.sql
 sep3=# \copy "Woerterbuch" from '/tmp/Woerterbuch.csv' CSV HEADER
+```
+
+Test your conversion by e.g. retrieving all "Woerterbuch" table entries for the "PETRO" data field:
+
+```
+sep3=# select "Langtext" as "Typ", "Kuerzel", "Klartext" from "Woerterbuch" w join "Schluesseltypen" s on w."Typ" = s."Nebentypbez" where s."Datenfeld" = 'PETRO' order by "Typ", "Kuerzel";
+     Typ      |                    Typbezeichnung                     | Kuerzel |                     Klartext                     
+--------------+-------------------------------------------------------+---------+--------------------------------------------------
+ Ergaenz_Allg | Allgemeine Ergänzungsattribute (Eigenschaften)        | afg     | aufgearbeitet
+ Ergaenz_Allg | Allgemeine Ergänzungsattribute (Eigenschaften)        | agl     | aufgelockert
+ Ergaenz_Allg | Allgemeine Ergänzungsattribute (Eigenschaften)        | agw     | ausgewaschen
+ Ergaenz_Allg | Allgemeine Ergänzungsattribute (Eigenschaften)        | al      | allochthon
+[...]
+ Spetro_Oz    | Zersetzungsgrad nach SCHNEEKLOTH (1977)               | zg3     | mäßig zersetzt
+ Spetro_Oz    | Zersetzungsgrad nach SCHNEEKLOTH (1977)               | zg4     | stark zersetzt
+ Spetro_Oz    | Zersetzungsgrad nach SCHNEEKLOTH (1977)               | zg5     | sehr stark zersetzt
+ Spetro_Oz    | Zersetzungsgrad nach SCHNEEKLOTH (1977)               | zgu     | unzersetzt
+(2113 rows)
+t
+(2113 rows)
 ```
 
 ## Installation
