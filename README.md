@@ -49,8 +49,6 @@ sep3=# select "Langtext" as "Typ", "Kuerzel", "Klartext" from "Woerterbuch" w jo
  Spetro_Oz    | Zersetzungsgrad nach SCHNEEKLOTH (1977)               | zg5     | sehr stark zersetzt
  Spetro_Oz    | Zersetzungsgrad nach SCHNEEKLOTH (1977)               | zgu     | unzersetzt
 (2113 rows)
-t
-(2113 rows)
 ```
 
 ## Installation
