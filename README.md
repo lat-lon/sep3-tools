@@ -2,8 +2,10 @@
 Tools for processing SEP 3 geological data.
 
 ## Components
+The SEP3-Tools are based on [ANTLR](https://www.antlr.org/) and are providing a tool to parse coded strings such as `^u(t,lw)`. The grammar of these codes is defined in file [PetroGrammar](https://github.com/lat-lon/sep3-tools/blob/main/src/main/antlr4/org/sep3tools/gen/PetroGrammar.g4) and translated into a parser using the [Java](https://www.java.com) programming language. 
 
 ## License
+SEP3-Tools are distributed under the GNU Lesser General Public License, Version 2.1 (LGPL 2.1). More information about the license can be found [here](https://github.com/lat-lon/sep3-tools/blob/main/LICENSE). 
 
 ## Requirements
 
@@ -54,6 +56,12 @@ sep3=# select "Langtext" as "Typ", "Kuerzel", "Klartext" from "Woerterbuch" w jo
 ## Installation
 
 ## Hacking
+To build SEP3-Tools you need to install a [JDK 16](https://adoptium.net/?variant=openjdk16&jvmVariant=hotspot) and [Apache Maven](https://maven.apache.org/).
+Then run the following command:
+
+```
+mvn clean install
+```
 
 ## Contact
 
