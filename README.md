@@ -38,7 +38,7 @@ sep3=# \copy "Woerterbuch" from '/tmp/Woerterbuch.csv' CSV HEADER
 Test your conversion by e.g. retrieving all "Woerterbuch" table entries for the "PETRO" data field:
 
 ```
-sep3=# select "Langtext" as "Typ", "Kuerzel", "Klartext" from "Woerterbuch" w join "Schluesseltypen" s on w."Typ" = s."Nebentypbez" where s."Datenfeld" = 'PETRO' order by "Typ", "Kuerzel";
+sep3=# select "Typ", "Langtext" as "Typbezeichnung", "Kuerzel", "Klartext" from "Woerterbuch" w join "Schluesseltypen" s on w."Typ" = s."Nebentypbez" where s."Datenfeld" = 'PETRO' order by "Typ", "Kuerzel";
      Typ      |                    Typbezeichnung                     | Kuerzel |                     Klartext                     
 --------------+-------------------------------------------------------+---------+--------------------------------------------------
  Ergaenz_Allg | Allgemeine Ergänzungsattribute (Eigenschaften)        | afg     | aufgearbeitet
