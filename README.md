@@ -57,10 +57,29 @@ sep3=# select "Typ", "Langtext" as "Typbezeichnung", "Kuerzel", "Klartext" from 
 
 ## Hacking
 To build SEP3-Tools you need to install a [JDK 16](https://adoptium.net/?variant=openjdk16&jvmVariant=hotspot) and [Apache Maven](https://maven.apache.org/).
-Then run the following command:
+Then run the following command to build the parser:
 
-```
+```shell
 mvn clean install
+```
+
+To execute the parser you have to download Antlr and all other dependencies first with:
+
+```shell
+mvn dependency:copy-dependencies -DoutputDirectory=target
+```
+
+Then you can execute the parser with:
+
+```shell
+java -jar ./target/sep3-parser-0.0.1-SNAPSHOT.jar "<soil_codes>"
+```
+for example:
+
+```shell
+$> java -jar ./target/sep3-parser-0.0.1-SNAPSHOT.jar "^u(t,lw)"
+2021-09-14 12:00:00 WARN  org.sep3tools.PetroVisitor:20 - Dictionary is not available, fallback to internal dictionary if possible.
+Schluff (tonig, lagenweise)
 ```
 
 ## Contact

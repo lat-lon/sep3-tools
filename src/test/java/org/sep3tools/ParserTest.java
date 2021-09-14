@@ -16,14 +16,14 @@ import org.sep3tools.gen.PetroGrammarParser;
  */
 public class ParserTest {
 
-    @Test
-    public void verifyThatRockCodeIsParsed() {
-        CharStream input = CharStreams.fromString("^ms(r2,r3(tw),gs(lw,r2-r3)),^u(t,lw),^gs(r3,bei(113),nf?)");
-        PetroGrammarLexer lexer = new PetroGrammarLexer(input);
-        CommonTokenStream tokens = new CommonTokenStream(lexer);
-        PetroGrammarParser parser = new PetroGrammarParser(tokens);
-        ParseTree tree = parser.schichtbeschreibung();
-        assertThat(tree, is(notNullValue()));
-    }
-    
+	@Test
+	public void verifyThatRockCodeIsParsed() {
+		CharStream input = CharStreams.fromString("^ms(r2,r3(tw),gs(lw,r2-r3)),^u(t,lw),^gs(r3,bei(113),nf?)");
+		PetroGrammarLexer lexer = new PetroGrammarLexer(input);
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		PetroGrammarParser parser = new PetroGrammarParser(tokens);
+		ParseTree tree = parser.schichtbeschreibung();
+		assertThat(tree, is(notNullValue()));
+	}
+
 }
