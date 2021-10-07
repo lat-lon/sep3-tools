@@ -16,7 +16,7 @@ public class LaunchTest {
 		String parsed = Launch.parseS3(sep3String);
 
 		assertThat(parsed, CoreMatchers.is(
-				"Mittelsandstein (kantengerundet, mäßig gerundet (teilweise), grobsandig (lagenweise, kantengerundet bis mäßig gerundet)), Schluff (tonig, lagenweise), Grobsandstein (mäßig gerundet, bei (113), Nachfall (fraglich))"));
+				"Mittelsandstein (kantengerundet, mäßig gerundet (teilweise), grobsandig (lagenweise, kantengerundet bis mäßig gerundet)), Schluffstein (tonig, lagenweise), Grobsandstein (mäßig gerundet, bei (113), Nachfall (fraglich))"));
 	}
 
 }

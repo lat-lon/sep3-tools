@@ -22,24 +22,10 @@ attribute:
 uebergang_att: attribut '-' attribut;
 
 attribut:
-    ATTRIBUT            # attr
-    | UNBEKANNT         # attr_unbek
+    TEIL                # attr
     | attribut FRAGLICH # attr_fraglich
     | attribut SICHER   # attr_sicher
-    ;
-
-ATTRIBUT:
-    't'
-    |'lw'
-    |'r2'
-    |'r3'
-    |'tw'
-    |'gs'
-    |'nf'
-    |'bei'
-    |'tv'
-    |'tb'
-    |TIEFE
+    | TIEFE             # attr_tiefe
     ;
 
 TIEFE: ([0-9]|'.')+;
