@@ -1,26 +1,27 @@
 package org.sep3tools;
 
-import org.sep3tools.gen.PetroGrammarBaseVisitor;
-import org.sep3tools.gen.PetroGrammarParser;
-import org.slf4j.Logger;
+//import org.slf4j.Logger;
 
-import java.sql.SQLException;
+import org.sep3tools.gen.*;
+
+import java.sql.*;
 
 import static java.util.Objects.isNull;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
-	private static final Logger LOG = getLogger(PetroVisitor.class);
+
+//	private static final Logger LOG = getLogger(PetroVisitor.class);
 
 	private static String getS3ResultSet(String searchTerm) {
 		try {
 			return PLJavaConnector.getS3Name(searchTerm);
 		}
 		catch (SQLException e) {
-			LOG.warn("Dictionary is not available, fallback to internal dictionary if possible.");
+//			LOG.warn("Dictionary is not available, fallback to internal dictionary if possible.");
 		}
-		return null;
+		return "";
 	}
 
 	@Override
@@ -32,11 +33,11 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	public String visitBestandteil(PetroGrammarParser.BestandteilContext ctx) {
 		String boden = ctx.getText();
 		String bodenTerm = getS3ResultSet(boden);
-		if (!isNull(bodenTerm))
+		if (!bodenTerm.isEmpty())
 			return bodenTerm;
 
 		return switch (boden) {
-		case "^u" -> "Schluff";
+		case "^u" -> "Schluffstein";
 		case "^ms" -> "Mittelsandstein";
 		case "^gs" -> "Grobsandstein";
 		default -> boden;
@@ -45,7 +46,13 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	@Override
 	public String visitAttr(PetroGrammarParser.AttrContext ctx) {
-		String attr = ctx.ATTRIBUT().getText();
+		String attr = ctx.getText();
+		if (!isNull(attr)) {
+			String attrTerm = getS3ResultSet(attr);
+			if (!attrTerm.isEmpty()) {
+				return attrTerm;
+			}
+		}
 		return switch (attr) {
 		case "r2" -> "kantengerundet";
 		case "r3" -> "mäßig gerundet";
@@ -73,10 +80,13 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	public String visitTeil(PetroGrammarParser.TeilContext ctx) {
 		String teil = visit(ctx.bestandteil());
 
-		if (ctx.attribute() == null)
+		if (isNull(ctx.attribute()))
 			return teil;
 
 		String attr = visit(ctx.attribute());
+		if (isNull(attr))
+			return teil;
+
 		if (attr.startsWith(" ("))
 			return teil + attr;
 		return teil + " (" + attr + ")";
@@ -101,6 +111,8 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	@Override
 	public String visitUnter_Attribute(PetroGrammarParser.Unter_AttributeContext ctx) {
 		String unter = visit(ctx.unter);
+		if (isNull(unter))
+			return visit(ctx.attr);
 		if (unter.startsWith(" ("))
 			return visit(ctx.attr) + unter;
 		return visit(ctx.attr) + " (" + visit(ctx.unter) + ")";
@@ -120,6 +132,8 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	public String visitAttr_sicher(PetroGrammarParser.Attr_sicherContext ctx) {
 		return visitChildren(ctx) + " (sicher)";
 	}
+
+	@Override public String visitAttr_tiefe(PetroGrammarParser.Attr_tiefeContext ctx) { return ctx.getText(); }
 
 	@Override
 	protected String aggregateResult(String aggregate, String nextResult) {

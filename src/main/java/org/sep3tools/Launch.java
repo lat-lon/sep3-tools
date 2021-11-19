@@ -1,12 +1,10 @@
 package org.sep3tools;
 
-import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
-import org.sep3tools.gen.PetroGrammarLexer;
-import org.sep3tools.gen.PetroGrammarParser;
+import org.sep3tools.gen.*;
 
 public class Launch {
 
@@ -26,6 +24,12 @@ public class Launch {
 
 		PetroVisitor visitor = new PetroVisitor();
 		return (visitor.visit(tree));
+	}
+
+	public static String parseS3(String wb, String st, String s3String) {
+		PLJavaConnector.setWb(wb);
+		PLJavaConnector.setSt(st);
+		return parseS3(s3String);
 	}
 
 }
