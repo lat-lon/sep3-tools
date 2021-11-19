@@ -156,7 +156,13 @@
                             <manifestSection>
                                 <name>pljava.ddr</name>
                                 <manifestEntries>
-                                    <SQLJDeploymentDescriptor>true</SQLJDeploymentDescriptor>
+                                    <SQLJDeploymentDescriptor>TRUE</SQLJDeploymentDescriptor>
+                                </manifestEntries>
+                            </manifestSection>
+                            <manifestSection>
+                                <name>deployment/sep3.ddr</name>
+                                <manifestEntries>
+                                    <SQLJDeploymentDescriptor>TRUE</SQLJDeploymentDescriptor>
                                 </manifestEntries>
                             </manifestSection>
                         </manifestSections>

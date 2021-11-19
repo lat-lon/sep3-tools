@@ -1,0 +1,21 @@
+SQLActions[ ] = {
+	"BEGIN INSTALL
+		CREATE SCHEMA sep3;
+		BEGIN PostgreSQL SET search_path TO sep3,public END postgreSQL;
+
+		CREATE FUNCTION sep3.java_getSystemProperty(varchar)
+			RETURNS varchar
+			AS 'java.lang.System.getProperty'
+			LANGUAGE java;
+
+		CREATE OR REPLACE FUNCTION parseS3(s3code pg_catalog.varchar, wb pg_catalog.varchar, st pg_catalog.varchar)
+		   RETURNS varchar
+           AS 'java.lang.String=org.sep3tools.Launch.parseS3(java.lang.String, java.lang.String, java.lang.String)'
+           LANGUAGE java;
+
+	END INSTALL",
+
+	"BEGIN REMOVE
+		DROP SCHEMA sep3 CASCADE;
+	END REMOVE"
+	}
