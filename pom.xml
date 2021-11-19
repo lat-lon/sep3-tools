@@ -121,9 +121,9 @@
                             <!-- This identifies a file in the jar named
                                pljava.ddr as an SQLJDeploymentDescriptor. -->
                             <manifestSection>
-                                <name>pljava.ddr</name>
+                                <name>deployment/sep3.ddr</name>
                                 <manifestEntries>
-                                    <SQLJDeploymentDescriptor>true</SQLJDeploymentDescriptor>
+                                    <SQLJDeploymentDescriptor>TRUE</SQLJDeploymentDescriptor>
                                 </manifestEntries>
                             </manifestSection>
                         </manifestSections>
@@ -151,14 +151,6 @@
                             <mainClass>org.sep3tools.Launch</mainClass>
                         </manifest>
                         <manifestSections>
-                            <!-- This identifies a file in the jar named
-                               pljava.ddr as an SQLJDeploymentDescriptor. -->
-                            <manifestSection>
-                                <name>pljava.ddr</name>
-                                <manifestEntries>
-                                    <SQLJDeploymentDescriptor>TRUE</SQLJDeploymentDescriptor>
-                                </manifestEntries>
-                            </manifestSection>
                             <manifestSection>
                                 <name>deployment/sep3.ddr</name>
                                 <manifestEntries>
