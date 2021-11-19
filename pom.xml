@@ -45,6 +45,13 @@
                 <enabled>true</enabled>
             </snapshots>
         </repository>
+        <repository>
+            <id>sep3tools-releases</id>
+            <url>https://repo.lat-lon.de/repository/sep3tools-releases/</url>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </repository>
     </repositories>
 
     <issueManagement>

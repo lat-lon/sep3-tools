@@ -30,7 +30,7 @@ pipeline {
         }
       }
       steps{
-        sh 'mvn deploy -Dskip.unit.tests=true'
+        sh 'mvn -B -C -q deploy -Dskip.unit.tests=true'
       }
     }
   }
