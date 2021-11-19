@@ -133,6 +133,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -145,6 +146,21 @@
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <mainClass>org.sep3tools.Launch</mainClass>
+                        </manifest>
+                        <manifestSections>
+                            <!-- This identifies a file in the jar named
+                               pljava.ddr as an SQLJDeploymentDescriptor. -->
+                            <manifestSection>
+                                <name>pljava.ddr</name>
+                                <manifestEntries>
+                                    <SQLJDeploymentDescriptor>true</SQLJDeploymentDescriptor>
+                                </manifestEntries>
+                            </manifestSection>
+                        </manifestSections>
+                    </archive>
                 </configuration>
             </plugin>
         </plugins>
