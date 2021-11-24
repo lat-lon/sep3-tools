@@ -111,21 +111,21 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <!-- This identifies and version-stamps the jar.
-                               Not essential, but easy and useful. -->
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                             <addClasspath>true</addClasspath>
                             <mainClass>org.sep3tools.Launch</mainClass>
                         </manifest>
                         <manifestSections>
                             <!-- This identifies a file in the jar named
-                               pljava.ddr as an SQLJDeploymentDescriptor. -->
+                               sep3.ddr as an SQLJDeploymentDescriptor. -->
+                            <!--
                             <manifestSection>
                                 <name>deployment/sep3.ddr</name>
                                 <manifestEntries>
                                     <SQLJDeploymentDescriptor>TRUE</SQLJDeploymentDescriptor>
                                 </manifestEntries>
                             </manifestSection>
+                            -->
                         </manifestSections>
                     </archive>
                 </configuration>
@@ -150,6 +150,7 @@
                         <manifest>
                             <mainClass>org.sep3tools.Launch</mainClass>
                         </manifest>
+                        <!--
                         <manifestSections>
                             <manifestSection>
                                 <name>deployment/sep3.ddr</name>
@@ -158,6 +159,7 @@
                                 </manifestEntries>
                             </manifestSection>
                         </manifestSections>
+                        -->
                     </archive>
                 </configuration>
             </plugin>
