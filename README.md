@@ -94,7 +94,7 @@ the [PL/Java](https://tada.github.io/pljava) library to execute the parser via S
 
 Follow the [PL/Java installation guide](https://tada.github.io/pljava/install/install.html) and install a JDK 16 on the machine running the PostgreSQL database.
 
-The installation steps for Ubuntu 22.02 with OpenJDK 16 and PL/Java v1.6.3 in a nutshell:
+The installation steps for PostgreSQL 12 with OpenJDK 16 and PL/Java v1.6.3 on Ubuntu 22.02 in a nutshell:
 ```shell
 apt-get update && apt-get -yq install postgresql-server-dev-12 openjdk-16-jdk git gcc libssl-dev libkrb5-dev 
 git clone https://github.com/tada/pljava.git
@@ -121,7 +121,7 @@ CREATE OR REPLACE FUNCTION parseS3( \
  AS 'java.lang.String=org.sep3tools.Launch.parseS3(java.lang.String, java.lang.String, java.lang.String)';
 ```
 
-Verify the installation with executing the function:
+Verify the installation by executing the function:
 ```postgres-sql
 SELECT parseS3('','','^u');
 ```
