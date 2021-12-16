@@ -122,6 +122,12 @@ CREATE OR REPLACE FUNCTION parseS3( \
  RETURNS pg_catalog.varchar \
  LANGUAGE java VOLATILE \
  AS 'java.lang.String=org.sep3tools.Launch.parseS3(java.lang.String, java.lang.String, java.lang.String)';
+ 
+ CREATE OR REPLACE FUNCTION parseS3( \
+ s3code pg_catalog.varchar) \
+ RETURNS pg_catalog.varchar \
+ LANGUAGE java VOLATILE \
+ AS 'java.lang.String=org.sep3tools.Launch.parseS3(java.lang.String)';
 ```
 
 Verify the installation by executing the function:
