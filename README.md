@@ -126,6 +126,9 @@ CREATE OR REPLACE FUNCTION parseS3( \
 
 Verify the installation by executing the function:
 ```postgres-sql
+#using the builtin hardcoded values
 SELECT parseS3('','','^u');
+#using the database tables imported from the Access Database
+SELECT parseS3('woerterbuch."Woerterbuch"','woerterbuch."Schluesseltypen"','^k');
 ```
 
