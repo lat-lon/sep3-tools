@@ -38,6 +38,7 @@ sep3=# set search_path = woerterbuch, public;
 sep3=# \i /tmp/Schluesseltypen_create-table.sql
 sep3=# \copy "Schluesseltypen" from '/tmp/Schluesseltypen.csv' CSV HEADER
 sep3=# \i /tmp/Woerterbuch_create-table.sql
+sep3=# set datestyle to 'SQL,MDY';
 sep3=# \copy "Woerterbuch" from '/tmp/Woerterbuch.csv' CSV HEADER
 ```
 
