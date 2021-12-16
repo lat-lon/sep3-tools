@@ -104,7 +104,7 @@ git clone https://github.com/tada/pljava.git
 cd pljava
 git checkout tags/V1_6_3
 mvn install 
-java -jar pljava-packaging/target/pljava-pg12.jar
+sudo java -jar pljava-packaging/target/pljava-pg12.jar
 ```
 
 ### Install SEP3-Tools in PostgreSQL
