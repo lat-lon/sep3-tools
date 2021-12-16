@@ -19,6 +19,8 @@ Download dictionary ("Woerterbuch") data from https://www.lbeg.niedersachsen.de/
 
 - "Schlüssellisten mit Kürzeln und zugehörigem Klartext und Typisierungen" - "Wörterbuch" - "Juli 2021"
 
+It's a ZIP file which contains the accdb and mdb files.
+
 Convert to PostgreSQL, e.g. using [mdbtools](https://github.com/mdbtools/mdbtools):
 
 ```
