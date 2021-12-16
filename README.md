@@ -118,7 +118,7 @@ CREATE EXTENSION pljava;
 SELECT sqlj.install_jar('file:///<PATH_TO_SEP3-TOOLS>/target/sep3-parser-0.0.1-SNAPSHOT-jar-with-dependencies.jar', 'sep3', true);
 SELECT sqlj.set_classpath('public', 'sep3');
 CREATE OR REPLACE FUNCTION parseS3( \
- s3code pg_catalog.varchar, wb pg_catalog.varchar, st pg_catalog.varchar) \
+ wb pg_catalog.varchar, st pg_catalog.varchar, s3code pg_catalog.varchar) \
  RETURNS pg_catalog.varchar \
  LANGUAGE java VOLATILE \
  AS 'java.lang.String=org.sep3tools.Launch.parseS3(java.lang.String, java.lang.String, java.lang.String)';
