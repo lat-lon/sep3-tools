@@ -97,7 +97,7 @@ the [PL/Java](https://tada.github.io/pljava) library to execute the parser via S
 
 Follow the [PL/Java installation guide](https://tada.github.io/pljava/install/install.html) and install a JDK 16 on the machine running the PostgreSQL database.
 
-The installation steps for PostgreSQL 12 with OpenJDK 16 and PL/Java v1.6.3 on Ubuntu 22.02 in a nutshell:
+The installation steps for PostgreSQL 12 with OpenJDK 16 and PL/Java v1.6.3 on Ubuntu 20.04.3 LTS in a nutshell:
 ```shell
 apt-get update && apt-get -yq install postgresql-server-dev-12 openjdk-16-jdk git gcc libssl-dev libkrb5-dev 
 git clone https://github.com/tada/pljava.git
@@ -137,4 +137,3 @@ SELECT parseS3('','','^u');
 #using the database tables imported from the Access Database
 SELECT parseS3('woerterbuch."Woerterbuch"','woerterbuch."Schluesseltypen"','^k');
 ```
-
