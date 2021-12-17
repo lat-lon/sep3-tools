@@ -19,6 +19,8 @@ Download dictionary ("Woerterbuch") data from https://www.lbeg.niedersachsen.de/
 
 - "Schlüssellisten mit Kürzeln und zugehörigem Klartext und Typisierungen" - "Wörterbuch" - "Juli 2021"
 
+It's a ZIP file which contains the accdb and mdb files.
+
 Convert to PostgreSQL, e.g. using [mdbtools](https://github.com/mdbtools/mdbtools):
 
 ```
@@ -36,6 +38,7 @@ sep3=# set search_path = woerterbuch, public;
 sep3=# \i /tmp/Schluesseltypen_create-table.sql
 sep3=# \copy "Schluesseltypen" from '/tmp/Schluesseltypen.csv' CSV HEADER
 sep3=# \i /tmp/Woerterbuch_create-table.sql
+sep3=# set datestyle to 'SQL,MDY';
 sep3=# \copy "Woerterbuch" from '/tmp/Woerterbuch.csv' CSV HEADER
 ```
 
@@ -101,7 +104,7 @@ git clone https://github.com/tada/pljava.git
 cd pljava
 git checkout tags/V1_6_3
 mvn install 
-java -jar pljava-packaging/target/pljava-pg12.jar
+sudo java -jar pljava-packaging/target/pljava-pg12.jar
 ```
 
 ### Install SEP3-Tools in PostgreSQL
@@ -115,14 +118,23 @@ CREATE EXTENSION pljava;
 SELECT sqlj.install_jar('file:///<PATH_TO_SEP3-TOOLS>/target/sep3-parser-0.0.1-SNAPSHOT-jar-with-dependencies.jar', 'sep3', true);
 SELECT sqlj.set_classpath('public', 'sep3');
 CREATE OR REPLACE FUNCTION parseS3( \
- s3code pg_catalog.varchar, wb pg_catalog.varchar, st pg_catalog.varchar) \
+ wb pg_catalog.varchar, st pg_catalog.varchar, s3code pg_catalog.varchar) \
  RETURNS pg_catalog.varchar \
  LANGUAGE java VOLATILE \
  AS 'java.lang.String=org.sep3tools.Launch.parseS3(java.lang.String, java.lang.String, java.lang.String)';
+ 
+ CREATE OR REPLACE FUNCTION parseS3( \
+ s3code pg_catalog.varchar) \
+ RETURNS pg_catalog.varchar \
+ LANGUAGE java VOLATILE \
+ AS 'java.lang.String=org.sep3tools.Launch.parseS3(java.lang.String)';
 ```
 
 Verify the installation by executing the function:
 ```postgres-sql
+#using the builtin hardcoded values
 SELECT parseS3('','','^u');
+#using the database tables imported from the Access Database
+SELECT parseS3('woerterbuch."Woerterbuch"','woerterbuch."Schluesseltypen"','^k');
 ```
 
