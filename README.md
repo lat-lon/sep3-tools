@@ -63,7 +63,7 @@ sep3=# select "Typ", "Langtext" as "Typbezeichnung", "Kuerzel", "Klartext" from 
 ## Installation
 
 ### Building
-To build SEP3-Tools you need to install a [JDK 16](https://adoptium.net/?variant=openjdk16&jvmVariant=hotspot) and [Apache Maven](https://maven.apache.org/).
+To build SEP3-Tools you need to install a [JDK 16](https://adoptium.net/?variant=openjdk16&jvmVariant=hotspot) and [Apache Maven 3.8.x](https://maven.apache.org/).
 Then run the following command to build the parser:
 
 ```shell
