@@ -35,6 +35,13 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		String bodenTerm = getS3ResultSet(boden);
 		if (!bodenTerm.isEmpty())
 			return bodenTerm;
+		for (int i=0; i<=5; i++){
+			if (boden.endsWith(String.valueOf(i))) {
+				bodenTerm = getS3ResultSet(boden.substring(0,boden.length()-1));
+				if (!bodenTerm.isEmpty())
+					return bodenTerm + i;
+			}
+		}
 
 		return switch (boden) {
 		case "^u" -> "Schluffstein";
@@ -51,6 +58,13 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 			String attrTerm = getS3ResultSet(attr);
 			if (!attrTerm.isEmpty()) {
 				return attrTerm;
+			}
+			for (int i=0; i<=5; i++){
+				if (attr.endsWith(String.valueOf(i))) {
+					attrTerm = getS3ResultSet(attr.substring(0,attr.length()-1));
+					if (!attrTerm.isEmpty())
+						return attrTerm + i;
+				}
 			}
 		}
 		return switch (attr) {
