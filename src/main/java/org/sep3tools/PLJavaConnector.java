@@ -22,7 +22,7 @@ public class PLJavaConnector {
         //String query = "SELECT Klartext from woerterbuch.Woerterbuch where Kuerzel=";
         String query = "select \"Kuerzel\", \"Klartext\" from "+ wb + " w join " + st + " s " +
                 "on w.\"Typ\" = s.\"Nebentypbez\" " +
-                "where s.\"Datenfeld\" = 'PETRO' AND \"Kuerzel\"=";
+                "where (s.\"Datenfeld\" = 'PETRO' OR s.\"Datenfeld\" = 'generic') AND \"Kuerzel\"=";
 
         PreparedStatement stmt = conn.prepareStatement(query + "'" + sep3Code + "'");
         ResultSet rs = stmt.executeQuery();
