@@ -13,14 +13,15 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	private static final int MAX_QUANTIFIER = 5;
 
-//	private static final Logger LOG = getLogger(PetroVisitor.class);
+	// private static final Logger LOG = getLogger(PetroVisitor.class);
 
 	private static String getS3ResultSet(String searchTerm) {
 		try {
 			return PLJavaConnector.getS3Name(searchTerm);
 		}
 		catch (SQLException e) {
-//			LOG.warn("Dictionary is not available, fallback to internal dictionary if possible.");
+			// LOG.warn("Dictionary is not available, fallback to internal dictionary if
+			// possible.");
 		}
 		return "";
 	}
@@ -38,7 +39,7 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 			return bodenTerm;
 		for (int i = 0; i <= MAX_QUANTIFIER; i++) {
 			if (boden.endsWith(String.valueOf(i))) {
-				bodenTerm = getS3ResultSet(boden.substring(0,boden.length()-1));
+				bodenTerm = getS3ResultSet(boden.substring(0, boden.length() - 1));
 				if (!bodenTerm.isEmpty())
 					return bodenTerm + i;
 			}
@@ -62,7 +63,7 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 			}
 			for (int i = 0; i <= MAX_QUANTIFIER; i++) {
 				if (attr.endsWith(String.valueOf(i))) {
-					attrTerm = getS3ResultSet(attr.substring(0,attr.length()-1));
+					attrTerm = getS3ResultSet(attr.substring(0, attr.length() - 1));
 					if (!attrTerm.isEmpty())
 						return attrTerm + i;
 				}
@@ -148,7 +149,10 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		return visitChildren(ctx) + " (sicher)";
 	}
 
-	@Override public String visitAttr_tiefe(PetroGrammarParser.Attr_tiefeContext ctx) { return ctx.getText(); }
+	@Override
+	public String visitAttr_tiefe(PetroGrammarParser.Attr_tiefeContext ctx) {
+		return ctx.getText();
+	}
 
 	@Override
 	protected String aggregateResult(String aggregate, String nextResult) {
