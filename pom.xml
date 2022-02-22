@@ -36,6 +36,18 @@
 
     <repositories>
         <repository>
+            <id>github-repo</id>
+            <name>Github local repo for API build from https://github.com/tada/pljava/</name>
+            <url>https://raw.github.com/lat-lon/sep3-tools/repository</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <repository>
             <id>latlon</id>
             <url>https://repo.lat-lon.de/repository/maven-public/</url>
             <releases>
@@ -210,7 +222,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>pljava-api</artifactId>
-            <version>1.6.3</version>
+            <version>1.6.4</version>
         </dependency>
     </dependencies>
 </project>
