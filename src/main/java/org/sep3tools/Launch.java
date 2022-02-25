@@ -23,13 +23,8 @@ public class Launch {
 		ParseTree tree = parser.schichtbeschreibung();
 
 		PetroVisitor visitor = new PetroVisitor();
+		visitor.setInDb(false);
 		return (visitor.visit(tree));
-	}
-
-	public static String parseS3(String wb, String st, String s3String) {
-		PLJavaConnector.setWb(wb);
-		PLJavaConnector.setSt(st);
-		return parseS3(s3String);
 	}
 
 }
