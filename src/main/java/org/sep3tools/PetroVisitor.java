@@ -11,13 +11,22 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
+	private static boolean inDB = true;
+
 	private static final int MAX_QUANTIFIER = 5;
 
 	// private static final Logger LOG = getLogger(PetroVisitor.class);
 
+	public static void setInDb(boolean inDB) {
+		PetroVisitor.inDB = inDB;
+	}
+
 	private static String getS3ResultSet(String searchTerm) {
 		try {
-			return PLJavaConnector.getS3Name(searchTerm);
+			if (inDB)
+				return PLJavaConnector.getS3Name(searchTerm);
+			else
+				return JavaConnector.getS3Name(searchTerm);
 		}
 		catch (SQLException e) {
 			// LOG.warn("Dictionary is not available, fallback to internal dictionary if
@@ -90,6 +99,22 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	@Override
 	public String visitAufzaehlung_b(PetroGrammarParser.Aufzaehlung_bContext ctx) {
 		return visit(ctx.bestandteile(0)) + ", " + visit(ctx.bestandteile(1));
+	}
+
+	@Override
+	public String visitUebergang_b(PetroGrammarParser.Uebergang_bContext ctx) {
+		String teil = visit(ctx.uebergang_bes());
+
+		if (isNull(ctx.attribute()))
+			return teil;
+
+		String attr = visit(ctx.attribute());
+		if (isNull(attr))
+			return teil;
+
+		if (attr.startsWith(" ("))
+			return teil + attr;
+		return teil + " (" + attr + ")";
 	}
 
 	@Override
