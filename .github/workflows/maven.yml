@@ -24,3 +24,8 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn -B verify --file pom.xml
+    - name: Publish artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: sep3-parser
+        path: target/sep3-parser-*-jar-with-dependencies.jar
