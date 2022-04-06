@@ -4,6 +4,7 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.postgresql.pljava.annotation.Function;
 import org.sep3tools.gen.*;
 
 public class Launch {
@@ -25,8 +26,8 @@ public class Launch {
 			sep3String = args[0];
 		}
 		else {
-			System.out.println("Aufruf mir folgenden Parametern:\n"
-					+ "JDBC-URL DB-User DB-Pass Woerterbuch-Tabelle Schlüsseltypen-Tabelle SEP3-String\n\n"
+			System.out.println("Aufruf mit folgenden Parametern:\n"
+					+ "[JDBC-URL] [DB-User] [DB-Passwort] [Woerterbuch-Tabelle] [Schlüsseltypen-Tabelle] <SEP3-String>\n\n"
 					+ "Beispiel für Parameter:\n" + "\"jdbc:postgresql://localhost/petroparser\" " + "\"petroDB\" "
 					+ "\"PetroPass\" " + "\"woerterbuch.\\\"\"Woerterbuch\\\"\" "
 					+ "\"woerterbuch.\\\"\"Schluesseltypen\\\"\" "
@@ -37,6 +38,7 @@ public class Launch {
 		System.out.println(visit);
 	}
 
+	@Function
 	public static String parseS3(String s3String) {
 		CharStream input = CharStreams.fromString(s3String);
 		PetroGrammarLexer lexer = new PetroGrammarLexer(input);

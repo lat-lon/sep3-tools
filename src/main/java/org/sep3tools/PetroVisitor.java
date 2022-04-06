@@ -1,13 +1,10 @@
 package org.sep3tools;
 
-//import org.slf4j.Logger;
-
 import org.sep3tools.gen.*;
 
 import java.sql.*;
 
 import static java.util.Objects.isNull;
-import static org.slf4j.LoggerFactory.getLogger;
 
 public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
@@ -54,12 +51,16 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 			}
 		}
 
-		return switch (boden) {
-		case "^u" -> "Schluffstein";
-		case "^ms" -> "Mittelsandstein";
-		case "^gs" -> "Grobsandstein";
-		default -> boden;
-		};
+		switch (boden) {
+		case "^u":
+			return "Schluffstein";
+		case "^ms":
+			return "Mittelsandstein";
+		case "^gs":
+			return "Grobsandstein";
+		default:
+			return boden;
+		}
 	}
 
 	@Override
@@ -78,17 +79,26 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 				}
 			}
 		}
-		return switch (attr) {
-		case "r2" -> "kantengerundet";
-		case "r3" -> "mäßig gerundet";
-		case "tw" -> "teilweise";
-		case "lw" -> "lagenweise";
-		case "gs" -> "grobsandig";
-		case "t" -> "tonig";
-		case "nf" -> "Nachfall";
-		case "bei" -> "bei";
-		default -> attr;
-		};
+		switch (attr) {
+		case "r2":
+			return "kantengerundet";
+		case "r3":
+			return "mäßig gerundet";
+		case "tw":
+			return "teilweise";
+		case "lw":
+			return "lagenweise";
+		case "gs":
+			return "grobsandig";
+		case "t":
+			return "tonig";
+		case "nf":
+			return "Nachfall";
+		case "bei":
+			return "bei";
+		default:
+			return attr;
+		}
 	}
 
 	@Override

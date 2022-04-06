@@ -19,7 +19,7 @@ Download dictionary ("Woerterbuch") data from https://www.lbeg.niedersachsen.de/
 
 - "Schlüssellisten mit Kürzeln und zugehörigem Klartext und Typisierungen" - "Wörterbuch" - "Juli 2021"
 
-It's a ZIP file which contains the accdb and mdb files.
+It's a ZIP file which contains the `accdb` and `mdb` files.
 
 Convert to PostgreSQL, e.g. using [mdbtools](https://github.com/mdbtools/mdbtools):
 
@@ -30,7 +30,7 @@ $ mdb-schema -T Woerterbuch Woerterbuch_Austausch_Internet_accdb.accdb postgres 
 $ mdb-export -D %F Woerterbuch_Austausch_Internet_accdb.accdb Woerterbuch > Woerterbuch.csv
 ```
 
-Create the "Schluesseltypen" and "Woerterbuch" tables in your PostgreSQL database, e.g. in their own "woerterbuch" schema:
+Create the _"Schluesseltypen"_ and _"Woerterbuch"_ tables in your PostgreSQL database, e.g. in their own _"woerterbuch"_ schema:
 
 ```
 sep3=# create schema woerterbuch;
@@ -42,7 +42,7 @@ sep3=# set datestyle to 'SQL,MDY';
 sep3=# \copy "Woerterbuch" from '/tmp/Woerterbuch.csv' CSV HEADER
 ```
 
-Test your conversion by e.g. retrieving all "Woerterbuch" table entries for the "PETRO" data field:
+Test your conversion by e.g. retrieving all _"Woerterbuch"_ table entries for the _"PETRO"_ data field:
 
 ```
 sep3=# select "Typ", "Langtext" as "Typbezeichnung", "Kuerzel", "Klartext" from "Woerterbuch" w join "Schluesseltypen" s on w."Typ" = s."Nebentypbez" where s."Datenfeld" = 'PETRO' order by "Typ", "Kuerzel";
@@ -97,14 +97,19 @@ the [PL/Java](https://tada.github.io/pljava) library to execute the parser via S
 
 Follow the [PL/Java installation guide](https://tada.github.io/pljava/install/install.html) and install a JDK 16 on the machine running the PostgreSQL database.
 
-The installation steps for PostgreSQL 12 with OpenJDK 16 and PL/Java v1.6.4 on Ubuntu 20.04.3 LTS in a nutshell:
+The installation steps for PostgreSQL 12 with OpenJDK 11 and PL/Java v1.6.4 on Ubuntu 20.04.3 LTS in a nutshell:
 ```shell
-apt-get update && apt-get -yq install postgresql-server-dev-12 openjdk-16-jdk git gcc libssl-dev libkrb5-dev 
+apt-get update && apt-get -yq install postgresql-server-dev-12 openjdk-11-jdk git gcc libssl-dev libkrb5-dev 
 git clone https://github.com/tada/pljava.git
 cd pljava
 git checkout tags/V1_6_4
 mvn install 
 sudo java -jar pljava-packaging/target/pljava-pg12.jar
+```
+
+or install the latest PL/Java version using: 
+```shell
+apt-get update && apt-get install postgresql-12-pljava
 ```
 
 ### Install SEP3-Tools in PostgreSQL
@@ -118,22 +123,13 @@ CREATE EXTENSION pljava;
 SELECT sqlj.install_jar('file:///<PATH_TO_SEP3-TOOLS>/target/sep3-parser-0.0.1-SNAPSHOT-jar-with-dependencies.jar', 'sep3', true);
 SELECT sqlj.set_classpath('public', 'sep3');
 CREATE OR REPLACE FUNCTION parseS3( \
- wb pg_catalog.varchar, st pg_catalog.varchar, s3code pg_catalog.varchar) \
- RETURNS pg_catalog.varchar \
- LANGUAGE java VOLATILE \
- AS 'java.lang.String=org.sep3tools.Launch.parseS3(java.lang.String, java.lang.String, java.lang.String)';
- 
- CREATE OR REPLACE FUNCTION parseS3( \
  s3code pg_catalog.varchar) \
  RETURNS pg_catalog.varchar \
  LANGUAGE java VOLATILE \
  AS 'java.lang.String=org.sep3tools.Launch.parseS3(java.lang.String)';
 ```
 
-Verify the installation by executing the function:
+Verify the installation by executing the function `parseS3()`:
 ```postgres-sql
-#using the builtin hardcoded values
-SELECT parseS3('','','^u');
-#using the database tables imported from the Access Database
-SELECT parseS3('woerterbuch."Woerterbuch"','woerterbuch."Schluesseltypen"','^k');
+SELECT parseS3('^u');
 ```

@@ -1,7 +1,8 @@
 SQLActions[ ] = {
 	"BEGIN INSTALL
 		CREATE SCHEMA sep3;
-		BEGIN PostgreSQL SET search_path TO sep3,public END postgreSQL;
+		BEGIN PostgreSQL
+		SET search_path TO sep3,public END postgreSQL;
 
 		CREATE FUNCTION sep3.java_getSystemProperty(varchar)
 			RETURNS varchar
@@ -12,10 +13,11 @@ SQLActions[ ] = {
 		   RETURNS varchar
            AS 'java.lang.String=org.sep3tools.Launch.parseS3(java.lang.String, java.lang.String, java.lang.String)'
            LANGUAGE java;
-
+        END PostgreSQL;
 	END INSTALL",
-
-	"BEGIN REMOVE
+   "BEGIN REMOVE
+    BEGIN PostgreSQL
 		DROP SCHEMA sep3 CASCADE;
+	END PostgreSQL;
 	END REMOVE"
 	}
