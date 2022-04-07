@@ -63,7 +63,7 @@ sep3=# select "Typ", "Langtext" as "Typbezeichnung", "Kuerzel", "Klartext" from 
 ## Installation
 
 ### Building
-To build SEP3-Tools you need to install a [JDK 16](https://adoptium.net/?variant=openjdk16&jvmVariant=hotspot) and [Apache Maven 3.8.x](https://maven.apache.org/).
+To build SEP3-Tools you need to install a [JDK 11](https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot) and [Apache Maven 3.8.x](https://maven.apache.org/).
 Then run the following command to build the parser:
 
 ```shell
@@ -95,7 +95,7 @@ the [PL/Java](https://tada.github.io/pljava) library to execute the parser via S
 
 #### Prepare PostgreSQL
 
-Follow the [PL/Java installation guide](https://tada.github.io/pljava/install/install.html) and install a JDK 16 on the machine running the PostgreSQL database.
+Follow the [PL/Java installation guide](https://tada.github.io/pljava/install/install.html) and install a JDK 11 on the machine running the PostgreSQL database.
 
 The installation steps for PostgreSQL 12 with OpenJDK 11 and PL/Java v1.6.4 on Ubuntu 20.04.3 LTS in a nutshell:
 ```shell
@@ -117,7 +117,7 @@ apt-get update && apt-get install postgresql-12-pljava
 Now PL/Java is installed and the SEP3-Tools library needs to be loaded into the database. Connect to the PostgreSQL database with
 `psql -U postgres` and execute the following statements:
 ```postgres-sql
-SET pljava.libjvm_location TO '/usr/lib/jvm/java-16-openjdk-amd64/lib/server/libjvm.so';
+SET pljava.libjvm_location TO '/usr/lib/jvm/java-11-openjdk-amd64/lib/server/libjvm.so';
 ALTER database postgres SET pljava.libjvm_location FROM current;
 CREATE EXTENSION pljava;
 SELECT sqlj.install_jar('file:///<PATH_TO_SEP3-TOOLS>/target/sep3-parser-0.0.1-SNAPSHOT-jar-with-dependencies.jar', 'sep3', true);
