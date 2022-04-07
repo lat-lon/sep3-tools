@@ -133,3 +133,13 @@ Verify the installation by executing the function `parseS3()`:
 ```postgres-sql
 SELECT parseS3('^u');
 ```
+You can get the description of the function by executing the `\df` command:
+
+```postgres-sql
+postgres=#  \df *parseS3*
+                           List of functions
+ Schema |  Name   | Result data type  |   Argument data types    | Type 
+--------+---------+-------------------+--------------------------+------
+ public | parses3 | character varying | s3code character varying | func
+(1 row)
+```
