@@ -27,17 +27,14 @@ public class PLJavaConnector {
 				+ "where (s.\"Datenfeld\" = 'PETRO' OR s.\"Datenfeld\" = 'diverse') AND \"Kuerzel\"=";
 
 		PreparedStatement stmt = conn.prepareStatement(query + "'" + sep3Code + "'");
-		ResultSet rs = stmt.executeQuery();
-		boolean validRS = rs.next();
-		String ret = "";
-		if (validRS)
-			ret = rs.getString(2);
-
-		stmt.close();
-		conn.close();
-
-		return (ret);
-
+		try (ResultSet rs = stmt.executeQuery()) {
+			boolean validRS = rs.next();
+			String result = "";
+			if (validRS) {
+				result = rs.getString(2);
+			}
+			return result;
+		}
 	}
 
 }
