@@ -99,7 +99,7 @@ Follow the [PL/Java installation guide](https://tada.github.io/pljava/install/in
 
 The installation steps for PostgreSQL 12 with OpenJDK 11 and PL/Java v1.6.4 on Ubuntu 20.04.3 LTS in a nutshell:
 ```shell
-apt-get update && apt-get -yq install postgresql-server-dev-12 openjdk-11-jdk git gcc libssl-dev libkrb5-dev 
+apt-get update && apt-get -yq install postgresql-server-dev-12 openjdk-11-jdk maven git gcc libssl-dev libkrb5-dev 
 git clone https://github.com/tada/pljava.git
 cd pljava
 git checkout tags/V1_6_4
