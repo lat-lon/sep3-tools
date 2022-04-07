@@ -163,16 +163,14 @@
                         <manifest>
                             <mainClass>org.sep3tools.Launch</mainClass>
                         </manifest>
-                        <!--
                         <manifestSections>
                             <manifestSection>
-                                <name>deployment/sep3.ddr</name>
+                                <name>pljava.ddr</name>
                                 <manifestEntries>
                                     <SQLJDeploymentDescriptor>TRUE</SQLJDeploymentDescriptor>
                                 </manifestEntries>
                             </manifestSection>
                         </manifestSections>
-                        -->
                     </archive>
                 </configuration>
             </plugin>
