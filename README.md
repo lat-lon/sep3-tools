@@ -90,6 +90,13 @@ $> java -jar ./target/sep3-parser-0.0.1-SNAPSHOT.jar "^u(t,lw)"
 2021-09-14 12:00:00 WARN  org.sep3tools.PetroVisitor:20 - Dictionary is not available, fallback to internal dictionary if possible.
 Schluff (tonig, lagenweise)
 ```
+or using the Woerterbuch data with the options `sep3-parser [jdbc-url] [username] [password] [dictionary] [keytypes] <soil_codes>`:
+
+```shell
+$> java -jar ./target/sep3-parser-0.0.1-SNAPSHOT-jar-with-dependencies.jar "jdbc:postgresql://localhost:5432/postgres" "postgres" "postgres" "woerterbuch.\"Woerterbuch\"" "woerterbuch.\"Schluesseltypen\"" "G(fg-gg,ms-gs,mats,mata,grs(tw)),fX-mX(mata),mS(fs,grs,fg-mg2,mx(voe))"
+Kies [gerundet] (feinkiesig bis grobkiesig, mittelsandig bis grobsandig, Schwarzwaldmaterial, alpines Material, grusig (teilweise)), Feinsteinstücke [2,0-6,3 mm] bis Mittelsteinstücke [6,3-20 mm] (alpines Material), Mittelsand [0,2-0,63 mm] (feinsandig, grusig, feinkiesig bis mittelkiesig2, mittelsteinig (vereinzelt vorhanden))
+```
+
 ### Running inside PostgreSQL
 
 You can install SEP3-Tools into a [PostgreSQL](https://www.postgresql.org/) database and execute the parser via a database function. The SEP3-Tools are using
@@ -109,7 +116,7 @@ mvn install
 sudo java -jar pljava-packaging/target/pljava-pg12.jar
 ```
 
-or install the latest PL/Java version using: 
+or install the latest PL/Java version on Debian using the `postgresql-12-pljava` package: 
 ```shell
 apt-get update && apt-get install postgresql-12-pljava
 ```
@@ -124,11 +131,6 @@ ALTER database postgres SET pljava.libjvm_location FROM current;
 CREATE EXTENSION pljava;
 SELECT sqlj.install_jar('file:///<PATH_TO_SEP3-TOOLS>/target/sep3-parser-0.0.1-SNAPSHOT-jar-with-dependencies.jar', 'sep3', true);
 SELECT sqlj.set_classpath('public', 'sep3');
-CREATE OR REPLACE FUNCTION parseS3( \
- s3code pg_catalog.varchar) \
- RETURNS pg_catalog.varchar \
- LANGUAGE java VOLATILE \
- AS 'java.lang.String=org.sep3tools.Launch.parseS3(java.lang.String)';
 ```
 
 Verify the installation by executing the function `parseS3()`:
