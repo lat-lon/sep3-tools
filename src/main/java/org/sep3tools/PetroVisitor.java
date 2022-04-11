@@ -3,31 +3,23 @@ package org.sep3tools;
 import org.sep3tools.gen.*;
 
 import java.sql.*;
+import java.util.logging.Logger;
 
 import static java.util.Objects.isNull;
 
 public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
-	private static boolean inDB = true;
-
 	private static final int MAX_QUANTIFIER = 5;
 
-	// private static final Logger LOG = getLogger(PetroVisitor.class);
-
-	public static void setInDb(boolean inDB) {
-		PetroVisitor.inDB = inDB;
-	}
+	private static final Logger LOG = Logger.getLogger(JavaConnector.class.getName());
 
 	private static String getS3ResultSet(String searchTerm) {
 		try {
-			if (inDB)
-				return PLJavaConnector.getS3Name(searchTerm);
-			else
-				return JavaConnector.getS3Name(searchTerm);
+			return JavaConnector.getS3Name(searchTerm);
 		}
 		catch (SQLException e) {
-			// LOG.warn("Dictionary is not available, fallback to internal dictionary if
-			// possible.");
+			LOG.warning("Dictionary is not available, fallback to internal dictionary if possible." + " Caused by "
+					+ e.getLocalizedMessage());
 		}
 		return "";
 	}

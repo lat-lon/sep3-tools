@@ -13,6 +13,8 @@ https://github.com/lat-lon/sep3-tools/issues
 
 ## Requirements
 
+Install a [PostgreSQL](https://www.postgresql.org/) database 10+.
+
 ### Woerterbuch data
 
 Download dictionary ("Woerterbuch") data from https://www.lbeg.niedersachsen.de/karten_daten_publikationen/bohrdatenbank/sep_3/softwaredownloads/software-downloads-875.html as follows:

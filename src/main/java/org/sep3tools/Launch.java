@@ -47,7 +47,6 @@ public class Launch {
 		ParseTree tree = parser.schichtbeschreibung();
 
 		PetroVisitor visitor = new PetroVisitor();
-		visitor.setInDb(false);
 		return (visitor.visit(tree));
 	}
 

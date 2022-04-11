@@ -1,18 +1,24 @@
 package org.sep3tools;
 
 import java.sql.*;
+import java.util.logging.Logger;
 
-public class JavaConnector {
+public final class JavaConnector {
 
-	private static String m_url = "jdbc:postgresql://localhost/petroparser";
+	private static final Logger LOG = Logger.getLogger(JavaConnector.class.getName());
 
-	private static String user = "petroparser";
+	private static String m_url = "jdbc:default:connection";
 
-	private static String pass = "PetroParser";
+	private static String user = "";
+
+	private static String pass = "";
 
 	private static String wb = "woerterbuch.\"Woerterbuch\"";
 
 	private static String st = "woerterbuch.\"Schluesseltypen\"";
+
+	private JavaConnector() {
+	}
 
 	public static void setWb(String wb) {
 		JavaConnector.wb = wb;
@@ -34,25 +40,27 @@ public class JavaConnector {
 		JavaConnector.m_url = url;
 	}
 
+	/**
+	 * String query = "SELECT Klartext from woerterbuch.Woerterbuch where Kuerzel=";
+	 */
 	public static String getS3Name(String sep3Code) throws SQLException {
 		Connection conn = DriverManager.getConnection(m_url, user, pass);
-		// String query = "SELECT Klartext from woerterbuch.Woerterbuch; where Kuerzel=";
 		String query = "select \"Kuerzel\", \"Klartext\" from " + wb + "w join " + st + " s "
 				+ "on w.\"Typ\" = s.\"Nebentypbez\" "
-				+ "where (s.\"Datenfeld\" = 'PETRO' OR s.\"Datenfeld\" = 'diverse') AND \"Kuerzel\"=";
+				+ "where (s.\"Datenfeld\" = 'PETRO' OR s.\"Datenfeld\" = 'diverse') AND \"Kuerzel\"= ?";
 
-		PreparedStatement stmt = conn.prepareStatement(query + "'" + sep3Code + "'");
-		ResultSet rs = stmt.executeQuery();
-		boolean validRS = rs.next();
-		String ret = "";
-		if (validRS)
-			ret = rs.getString(2);
-
-		stmt.close();
-		conn.close();
-
-		return (ret);
-
+		PreparedStatement stmt = conn.prepareStatement(query);
+		stmt.setString(1, sep3Code);
+		LOG.fine("Executing statement: " + stmt);
+		try (ResultSet rs = stmt.executeQuery()) {
+			boolean validRS = rs.next();
+			String result = "";
+			if (validRS) {
+				result = rs.getString(2);
+			}
+			LOG.fine("Returning: " + result);
+			return result;
+		}
 	}
 
 }
