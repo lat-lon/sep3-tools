@@ -31,6 +31,6 @@ attribut:
 TIEFE: ([0-9]|'.')+;
 TEIL: ANY+;
 UNBEKANNT: ANY+;
-ANY: [a-z]|[A-Z]|[0-9]|'^'|'*'|'+';
+ANY: [a-z]|[A-Z]|[0-9]|'^'|'*'|'+'|'"';
 FRAGLICH: '?';
 SICHER: '!';
