@@ -142,7 +142,7 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		if (att1.startsWith(" ("))
 			att1 = att1.substring(2, att1.length() - 1);
 		if (att2.startsWith(" ("))
-			att1 = att2.substring(2, att2.length() - 1);
+			att2 = att2.substring(2, att2.length() - 1);
 		return " (" + att1 + ", " + att2 + ")";
 	}
 
@@ -153,12 +153,20 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	@Override
 	public String visitUnter_Attribute(PetroGrammarParser.Unter_AttributeContext ctx) {
+		String attrib = visit(ctx.attr);
 		String unter = visit(ctx.unter);
 		if (isNull(unter))
 			return visit(ctx.attr);
+		if (attrib.equals("bei")) {
+			if (unter.startsWith(" ("))
+				unter = unter.substring(2, unter.length() - 1);
+			return attrib + " " + unter;
+		}
+		if (unter.matches("([0-9]|,)+"))
+			return attrib + " " + unter;
 		if (unter.startsWith(" ("))
 			return visit(ctx.attr) + unter;
-		return visit(ctx.attr) + " (" + visit(ctx.unter) + ")";
+		return attrib + " (" + unter + ")";
 	}
 
 	@Override
@@ -178,7 +186,9 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	@Override
 	public String visitAttr_tiefe(PetroGrammarParser.Attr_tiefeContext ctx) {
-		return ctx.getText();
+		String tiefe = ctx.getText();
+		tiefe = tiefe.replace(".", ",");
+		return tiefe;
 	}
 
 	@Override
