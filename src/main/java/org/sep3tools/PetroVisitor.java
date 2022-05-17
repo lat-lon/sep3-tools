@@ -6,6 +6,7 @@ import java.sql.*;
 import java.util.logging.Logger;
 
 import static java.util.Objects.isNull;
+import static org.sep3tools.JavaConnector.getBodenQuant;
 
 public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
@@ -37,9 +38,20 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 			return bodenTerm;
 		for (int i = 0; i <= MAX_QUANTIFIER; i++) {
 			if (boden.endsWith(String.valueOf(i))) {
-				bodenTerm = getS3ResultSet(boden.substring(0, boden.length() - 1));
-				if (!bodenTerm.isEmpty())
-					return bodenTerm + i;
+				String bodenShort = boden.substring(0, boden.length() - 1);
+				bodenTerm = getS3ResultSet(bodenShort);
+				if (!bodenTerm.isEmpty()) {
+					String bodenQuant = String.valueOf(i);
+					try {
+						bodenQuant = getBodenQuant(bodenShort, String.valueOf(i));
+						return bodenQuant + " " + bodenTerm;
+					}
+					catch (SQLException e) {
+						LOG.warning(
+								"Quantifier not found, fallback to digit." + " Caused by " + e.getLocalizedMessage());
+					}
+					return bodenTerm + bodenQuant;
+				}
 			}
 		}
 
@@ -65,9 +77,20 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 			}
 			for (int i = 0; i <= MAX_QUANTIFIER; i++) {
 				if (attr.endsWith(String.valueOf(i))) {
-					attrTerm = getS3ResultSet(attr.substring(0, attr.length() - 1));
-					if (!attrTerm.isEmpty())
-						return attrTerm + i;
+					String attrShort = attr.substring(0, attr.length() - 1);
+					attrTerm = getS3ResultSet(attrShort);
+					if (!attrTerm.isEmpty()) {
+						String attrQuant = String.valueOf(i);
+						try {
+							attrQuant = getBodenQuant(attrShort, String.valueOf(i));
+							return attrQuant + " " + attrTerm;
+						}
+						catch (SQLException e) {
+							LOG.warning("Quantifier not found, fallback to digit." + " Caused by "
+									+ e.getLocalizedMessage());
+						}
+						return attrTerm + attrQuant;
+					}
 				}
 			}
 		}
