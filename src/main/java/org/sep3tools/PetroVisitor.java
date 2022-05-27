@@ -8,12 +8,24 @@ import java.util.logging.Logger;
 import static java.util.Objects.isNull;
 import static org.sep3tools.JavaConnector.getBodenQuant;
 
+/**
+ * This class parses a SEP3 String and translates it
+ *
+ * @author Jeronimo Wanhoff <kontakt@jeronimowanhoff.de>
+ * @author Thorsten Friebe
+ */
 public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	private static final int MAX_QUANTIFIER = 5;
 
 	private static final Logger LOG = Logger.getLogger(JavaConnector.class.getName());
 
+	/**
+	 * get translation for SEP3-String
+	 *
+	 * @param searchTerm
+	 * @return translation
+	 */
 	private static String getS3ResultSet(String searchTerm) {
 		try {
 			return JavaConnector.getS3Name(searchTerm);
@@ -25,11 +37,24 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		return "";
 	}
 
+	/**
+	 * process complete SEP3 string
+	 *
+	 * @param ctx the parse tree
+	 * @return translated string complete SEP3 parse tree
+	 */
 	@Override
 	public String visitSchichtbeschreibung(PetroGrammarParser.SchichtbeschreibungContext ctx) {
 		return visitChildren(ctx);
 	}
 
+	/**
+	 * process single soil
+	 * takes quantifier into account, if present
+	 *
+	 * @param ctx the parse tree
+	 * @return translated string for soil parse tree
+	 */
 	@Override
 	public String visitBestandteil(PetroGrammarParser.BestandteilContext ctx) {
 		String boden = ctx.getText();
@@ -67,6 +92,13 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		}
 	}
 
+	/**
+	 * process single attribute
+	 * takes quantifier into account, if present
+	 *
+	 * @param ctx the parse tree
+	 * @return translated string for attribute parse tree
+	 */
 	@Override
 	public String visitAttr(PetroGrammarParser.AttrContext ctx) {
 		String attr = ctx.getText();
@@ -116,16 +148,34 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		}
 	}
 
+	/**
+	 * process soil part of transition
+	 *
+	 * @param ctx the parse tree
+	 * @return translated string of soil transition in parse tree
+	 */
 	@Override
 	public String visitUebergang_bes(PetroGrammarParser.Uebergang_besContext ctx) {
 		return visit(ctx.b1) + " bis " + visit(ctx.b2);
 	}
 
+	/**
+	 * process enumeration (aufzaehlung) of soil
+	 *
+	 * @param ctx the parse tree
+	 * @return translated string for soil enumeration parse tree
+	 */
 	@Override
 	public String visitAufzaehlung_b(PetroGrammarParser.Aufzaehlung_bContext ctx) {
 		return visit(ctx.bestandteile(0)) + ", " + visit(ctx.bestandteile(1));
 	}
 
+	/**
+	 * process transition (uebergang) for soil with attributes
+	 *
+	 * @param ctx the parse tree
+	 * @return translated string for transition parse tree
+	 */
 	@Override
 	public String visitUebergang_b(PetroGrammarParser.Uebergang_bContext ctx) {
 		String teil = visit(ctx.uebergang_bes());
@@ -142,6 +192,12 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		return teil + " (" + attr + ")";
 	}
 
+	/**
+	 * process part of soil composition
+	 *
+	 * @param ctx the parse tree
+	 * @return translated string for soil composition parse tree
+	 */
 	@Override
 	public String visitTeil(PetroGrammarParser.TeilContext ctx) {
 		String teil = visit(ctx.bestandteil());
@@ -158,6 +214,12 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		return teil + " (" + attr + ")";
 	}
 
+	/**
+	 * process enumeration (aufzaehlung) of attributes
+	 *
+	 * @param ctx the parse tree
+	 * @return translated string for attribute enumeration parse tree
+	 */
 	@Override
 	public String visitAufzaehlung_a(PetroGrammarParser.Aufzaehlung_aContext ctx) {
 		String att1 = visit(ctx.attribute(0));
@@ -169,11 +231,23 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		return " (" + att1 + ", " + att2 + ")";
 	}
 
+	/**
+	 * process transition (uebergang) for attributes
+	 *
+	 * @param ctx the parse tree
+	 * @return translated string for transition parse tree
+	 */
 	@Override
 	public String visitUebergang_att(PetroGrammarParser.Uebergang_attContext ctx) {
 		return visit(ctx.attribut(0)) + " bis " + visit(ctx.attribut(1));
 	}
 
+	/**
+	 * process sub attributes
+	 *
+	 * @param ctx the parse tree
+	 * @return translated string for sub attribute parse tree
+	 */
 	@Override
 	public String visitUnter_Attribute(PetroGrammarParser.Unter_AttributeContext ctx) {
 		String attrib = visit(ctx.attr);
@@ -192,6 +266,12 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		return attrib + " (" + unter + ")";
 	}
 
+	/**
+	 * process attribute "fraglich"
+	 *
+	 * @param ctx the parse tree
+	 * @return translated string for attribute "fraglich"
+	 */
 	@Override
 	public String visitAtt(PetroGrammarParser.AttContext ctx) {
 		return visit(ctx.attribut());
@@ -202,11 +282,23 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		return visitChildren(ctx) + " (fraglich)";
 	}
 
+	/**
+	 * process attribute "sicher"
+	 *
+	 * @param ctx the parse tree
+	 * @return translated string for attribut "sicher"
+	 */
 	@Override
 	public String visitAttr_sicher(PetroGrammarParser.Attr_sicherContext ctx) {
 		return visitChildren(ctx) + " (sicher)";
 	}
 
+	/**
+	 * extracts the "tiefe"-Attibute and replaces "." with "," as separator for decimal point
+	 *
+	 * @param ctx the parse tree
+	 * @return tiefe with "," as decimal point
+	 */
 	@Override
 	public String visitAttr_tiefe(PetroGrammarParser.Attr_tiefeContext ctx) {
 		String tiefe = ctx.getText();
@@ -214,6 +306,13 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		return tiefe;
 	}
 
+	/**
+	 * combines the old result with new element
+	 *
+	 * @param aggregate result so far
+	 * @param nextResult new item to add
+	 * @return complete result
+	 */
 	@Override
 	protected String aggregateResult(String aggregate, String nextResult) {
 		if (aggregate == null)
