@@ -18,8 +18,8 @@ public class Launch {
 
 	/**
 	 * Launches SEP3 tool with arguments:
-	 *
-	 * @param args DB URL, DB user, DB password, woerterbuch table name, schluesseltype table name, SEP3 string to process
+	 * @param args DB URL, DB user, DB password, woerterbuch table name, schluesseltype
+	 * table name, SEP3 string to process
 	 */
 	public static void main(String[] args) {
 		String sep3String;
@@ -52,7 +52,6 @@ public class Launch {
 
 	/**
 	 * translates a coded SEP3 String to a human readable format
-	 *
 	 * @param s3String coded SEP3 string parsing
 	 * @return human readable format of SEP3 input
 	 */

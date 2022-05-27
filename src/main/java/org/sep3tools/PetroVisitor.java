@@ -22,7 +22,6 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	/**
 	 * get translation for SEP3-String
-	 *
 	 * @param searchTerm
 	 * @return translation
 	 */
@@ -39,7 +38,6 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	/**
 	 * process complete SEP3 string
-	 *
 	 * @param ctx the parse tree
 	 * @return translated string complete SEP3 parse tree
 	 */
@@ -49,9 +47,7 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	}
 
 	/**
-	 * process single soil
-	 * takes quantifier into account, if present
-	 *
+	 * process single soil takes quantifier into account, if present
 	 * @param ctx the parse tree
 	 * @return translated string for soil parse tree
 	 */
@@ -93,9 +89,7 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	}
 
 	/**
-	 * process single attribute
-	 * takes quantifier into account, if present
-	 *
+	 * process single attribute takes quantifier into account, if present
 	 * @param ctx the parse tree
 	 * @return translated string for attribute parse tree
 	 */
@@ -150,7 +144,6 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	/**
 	 * process soil part of transition
-	 *
 	 * @param ctx the parse tree
 	 * @return translated string of soil transition in parse tree
 	 */
@@ -161,7 +154,6 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	/**
 	 * process enumeration (aufzaehlung) of soil
-	 *
 	 * @param ctx the parse tree
 	 * @return translated string for soil enumeration parse tree
 	 */
@@ -172,7 +164,6 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	/**
 	 * process transition (uebergang) for soil with attributes
-	 *
 	 * @param ctx the parse tree
 	 * @return translated string for transition parse tree
 	 */
@@ -194,7 +185,6 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	/**
 	 * process part of soil composition
-	 *
 	 * @param ctx the parse tree
 	 * @return translated string for soil composition parse tree
 	 */
@@ -216,7 +206,6 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	/**
 	 * process enumeration (aufzaehlung) of attributes
-	 *
 	 * @param ctx the parse tree
 	 * @return translated string for attribute enumeration parse tree
 	 */
@@ -233,7 +222,6 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	/**
 	 * process transition (uebergang) for attributes
-	 *
 	 * @param ctx the parse tree
 	 * @return translated string for transition parse tree
 	 */
@@ -244,7 +232,6 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	/**
 	 * process sub attributes
-	 *
 	 * @param ctx the parse tree
 	 * @return translated string for sub attribute parse tree
 	 */
@@ -268,7 +255,6 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	/**
 	 * process attribute "fraglich"
-	 *
 	 * @param ctx the parse tree
 	 * @return translated string for attribute "fraglich"
 	 */
@@ -284,7 +270,6 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	/**
 	 * process attribute "sicher"
-	 *
 	 * @param ctx the parse tree
 	 * @return translated string for attribut "sicher"
 	 */
@@ -294,8 +279,8 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	}
 
 	/**
-	 * extracts the "tiefe"-Attibute and replaces "." with "," as separator for decimal point
-	 *
+	 * extracts the "tiefe"-Attibute and replaces "." with "," as separator for decimal
+	 * point
 	 * @param ctx the parse tree
 	 * @return tiefe with "," as decimal point
 	 */
@@ -308,7 +293,6 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
 	/**
 	 * combines the old result with new element
-	 *
 	 * @param aggregate result so far
 	 * @param nextResult new item to add
 	 * @return complete result
