@@ -21,6 +21,9 @@ pipeline {
         always {
           junit '**/target/surefire-reports/*.xml'
         }
+        success {
+          archiveArtifacts artifacts: 'target/sep3-parser-*-jar-with-dependencies.jar'
+        }
       }
     }
     stage('Deploy') {
