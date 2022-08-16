@@ -7,8 +7,20 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.postgresql.pljava.annotation.Function;
 import org.sep3tools.gen.*;
 
+/**
+ * Command line launcher for SEP3 tools
+ *
+ * @author Jeronimo Wanhoff <kontakt@jeronimowanhoff.de>
+ * @author Thorsten Friebe
+ * @author Lyn Goltz
+ */
 public class Launch {
 
+	/**
+	 * Launches SEP3 tool with arguments:
+	 * @param args DB URL, DB user, DB password, woerterbuch table name, schluesseltype
+	 * table name, SEP3 string to process
+	 */
 	public static void main(String[] args) {
 		String sep3String;
 		if (args.length == 6) {
@@ -38,6 +50,11 @@ public class Launch {
 		System.out.println(visit);
 	}
 
+	/**
+	 * translates a coded SEP3 String to a human readable format
+	 * @param s3String coded SEP3 string parsing
+	 * @return human readable format of SEP3 input
+	 */
 	@Function
 	public static String parseS3(String s3String) {
 		CharStream input = CharStreams.fromString(s3String);

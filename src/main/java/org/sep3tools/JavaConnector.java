@@ -3,6 +3,13 @@ package org.sep3tools;
 import java.sql.*;
 import java.util.logging.Logger;
 
+/**
+ * This class connects and communicates with a SEP3 Database to execute the queries and to
+ * retrieve translations for SEP3-Codes, quantifiers, etc.
+ *
+ * @author Jeronimo Wanhoff <kontakt@jeronimowanhoff.de>
+ * @author Thorsten Friebe
+ */
 public final class JavaConnector {
 
 	private static final Logger LOG = Logger.getLogger(JavaConnector.class.getName());
@@ -40,8 +47,13 @@ public final class JavaConnector {
 		JavaConnector.m_url = url;
 	}
 
+	// String query = "SELECT Klartext from woerterbuch.Woerterbuch where Kuerzel=";
+
 	/**
-	 * String query = "SELECT Klartext from woerterbuch.Woerterbuch where Kuerzel=";
+	 * translates a SEP3 code to clear text
+	 * @param sep3Code code for translation
+	 * @return translated SEP3 string
+	 * @throws SQLException if DB error occurs
 	 */
 	public static String getS3Name(String sep3Code) throws SQLException {
 		Connection conn = DriverManager.getConnection(m_url, user, pass);
@@ -63,6 +75,12 @@ public final class JavaConnector {
 		}
 	}
 
+	/**
+	 * Retrieves allowed attributes for a given SEP3 code
+	 * @param sep3Code for which attributes are requested
+	 * @return String containing information about allowed attributes, quantifiers, etc.
+	 * @throws SQLException if DB error occurs
+	 */
 	public static String getAllowedAttribs(String sep3Code) throws SQLException {
 		Connection conn = DriverManager.getConnection(m_url, user, pass);
 		String query = "select \"Kuerzel\", \"Attribute\" from " + wb + " w join " + st + " s "
@@ -82,6 +100,13 @@ public final class JavaConnector {
 		}
 	}
 
+	/**
+	 * returns appropriate quantifier string for a SEP3 code and quantifier (as digit)
+	 * @param sep3Code that is quantified with quant
+	 * @param quant quantifyer for sep3code (as digit)
+	 * @return quantifier based on sep3 code and quantifyer
+	 * @throws SQLException in case of DB error
+	 */
 	public static String getBodenQuant(String sep3Code, String quant) throws SQLException {
 		String allowedAttributes;
 		String quantBez;
@@ -108,6 +133,11 @@ public final class JavaConnector {
 		}
 	}
 
+	/**
+	 * extracts quantifyer type from a comma separated list of attributes
+	 * @param attributes as comma separated list
+	 * @return quantifyer type
+	 */
 	public static String getQuantBezFromAttribs(String attributes) {
 		String[] attribs;
 		attribs = attributes.split(",");
