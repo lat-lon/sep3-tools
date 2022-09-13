@@ -17,7 +17,7 @@ Install a [PostgreSQL](https://www.postgresql.org/) database 12+.
 
 ### Woerterbuch data
 
-Download the dictionary ("Woerterbuch") data from [www.lbeg.niedersachsen.de] (https://www.lbeg.niedersachsen.de/karten_daten_publikationen/bohrdatenbank/sep_3/softwaredownloads/software-downloads-875.html) as follows:
+Download the dictionary ("Woerterbuch") data from [www.lbeg.niedersachsen.de](https://www.lbeg.niedersachsen.de/karten_daten_publikationen/bohrdatenbank/sep_3/softwaredownloads/software-downloads-875.html) as follows:
 
 - "Schlüssellisten mit Kürzeln und zugehörigem Klartext und Typisierungen" - "Wörterbuch" - "Juli 2021"
 
