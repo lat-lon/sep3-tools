@@ -24,6 +24,8 @@ public final class JavaConnector {
 
 	private static String st = "woerterbuch.\"Schluesseltypen\"";
 
+	private static String sm = "bml.bml_schluesselmapping";
+
 	private JavaConnector() {
 	}
 
@@ -33,6 +35,10 @@ public final class JavaConnector {
 
 	public static void setSt(String st) {
 		JavaConnector.st = st;
+	}
+
+	public static void setSm(String sm) {
+		JavaConnector.sm = sm;
 	}
 
 	public static void setUser(String user) {
@@ -69,6 +75,30 @@ public final class JavaConnector {
 			String result = "";
 			if (validRS) {
 				result = rs.getString(2);
+			}
+			LOG.fine("Returning: " + result);
+			return result;
+		}
+	}
+
+	/**
+	 * translates a SEP3 code to BML litho code
+	 * @param sep3Code code for translation
+	 * @return BML litho string
+	 * @throws SQLException if DB error occurs
+	 */
+	public static String getS3AsBMmlLitho(String sep3Code) throws SQLException {
+		Connection conn = DriverManager.getConnection(m_url, user, pass);
+		String query = "select bml_code from " + sm + " where sep3_codelist = 'S3PETRO' AND sep3_code = ?";
+
+		PreparedStatement stmt = conn.prepareStatement(query);
+		stmt.setString(1, sep3Code);
+		LOG.fine("Executing statement: " + stmt);
+		try (ResultSet rs = stmt.executeQuery()) {
+			boolean validRS = rs.next();
+			String result = "";
+			if (validRS) {
+				result = rs.getString(1);
 			}
 			LOG.fine("Returning: " + result);
 			return result;
