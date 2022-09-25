@@ -73,7 +73,11 @@ public class LaunchBML {
 		Set<String> set = new HashSet<>();
 		Collections.addAll(set, trimmedArray);
 		String resultString = set.toString().replaceAll(" , ", " ");
-		return resultString.substring(1, resultString.length() - 1);
+		resultString = resultString.substring(1, resultString.length() - 1);
+		if (resultString.startsWith(", ")) {
+			resultString = resultString.substring(2);
+		}
+		return resultString;
 	}
 
 	/**
