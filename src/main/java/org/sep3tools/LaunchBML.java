@@ -8,9 +8,7 @@ import org.postgresql.pljava.annotation.Function;
 import org.sep3tools.gen.PetroGrammarLexer;
 import org.sep3tools.gen.PetroGrammarParser;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Command line launcher for SEP3 to BML tool
@@ -66,18 +64,17 @@ public class LaunchBML {
 
 		BmlVisitor visitor = new BmlVisitor();
 
-		List<String> compList = new ArrayList();
-		compList.add(visitor.visit(tree));
-
-		List<String> result = compList.stream().flatMap(str -> Arrays.stream(str.split(",\\s*"))).distinct().toList();
-		String resultString = result.toString();
-		resultString = resultString.substring(1, resultString.length() - 1);
-		resultString = resultString.replaceAll(" , ", " ");
-		if (resultString.startsWith(", ")) {
-			resultString = resultString.substring(2);
+		String[] compList = visitor.visit(tree).split(", ");
+		String[] trimmedArray = new String[compList.length];
+		ArrayList<String> resultList = new ArrayList();
+		for (int i = 0; i < compList.length; i++) {
+			trimmedArray[i] = compList[i].trim();
 		}
+		Set<String> set = new HashSet<>();
+		Collections.addAll(set, trimmedArray);
+		String resultString = set.toString().replaceAll(" , ", " ");
+		return resultString.substring(1, resultString.length() - 1);
 
-		return (resultString);
 	}
 
 }
