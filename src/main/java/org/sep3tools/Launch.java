@@ -46,7 +46,7 @@ public class Launch {
 					+ "\"G(fg-gg,ms-gs,mats,mata,grs(tw)),fX-mX(mata),mS(fs,grs,fg-mg2,mx(voe))\"");
 			return;
 		}
-		String visit = parseS3(sep3String);
+		String visit = S3_AsText(sep3String);
 		System.out.println(visit);
 	}
 
@@ -56,7 +56,7 @@ public class Launch {
 	 * @return human readable format of SEP3 input
 	 */
 	@Function
-	public static String parseS3(String s3String) {
+	public static String S3_AsText(String s3String) {
 		CharStream input = CharStreams.fromString(s3String);
 		PetroGrammarLexer lexer = new PetroGrammarLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -65,6 +65,21 @@ public class Launch {
 
 		PetroVisitor visitor = new PetroVisitor();
 		return (visitor.visit(tree));
+	}
+
+	/**
+	 * translates a coded SEP3 String to a human readable format. needed for in database
+	 * use
+	 * @param s3String coded SEP3 string parsing
+	 * @param st Schluesseltypen table
+	 * @param wb Woerterbuch table
+	 * @return human readable format of SEP3 input
+	 */
+	@Function
+	public static String S3_AsText(String s3String, String wb, String st) {
+		JavaConnector.setWb(wb);
+		JavaConnector.setSt(st);
+		return S3_AsText(s3String);
 	}
 
 }

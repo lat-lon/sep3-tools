@@ -45,7 +45,7 @@ public class LaunchBML {
 					+ "\"G(fg-gg,ms-gs,mats,mata,grs(tw)),fX-mX(mata),mS(fs,grs,fg-mg2,mx(voe))\"");
 			return;
 		}
-		String visit = parseS3BML(sep3String);
+		String visit = S3_AsBmlLitho(sep3String);
 		System.out.println(visit);
 	}
 
@@ -55,7 +55,7 @@ public class LaunchBML {
 	 * @return BML format of SEP3 input
 	 */
 	@Function
-	public static String parseS3BML(String s3String) {
+	public static String S3_AsBmlLitho(String s3String) {
 		CharStream input = CharStreams.fromString(s3String);
 		PetroGrammarLexer lexer = new PetroGrammarLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -74,7 +74,19 @@ public class LaunchBML {
 		Collections.addAll(set, trimmedArray);
 		String resultString = set.toString().replaceAll(" , ", " ");
 		return resultString.substring(1, resultString.length() - 1);
+	}
 
+	/**
+	 * translates a coded SEP3 String to a human readable format. needed for in database
+	 * use
+	 * @param s3String coded SEP3 string parsing
+	 * @param sm Schluesseltypen mapping table
+	 * @return BML format of SEP3 input
+	 */
+	@Function
+	public static String S3_AsBmlLitho(String s3String, String sm) {
+		JavaConnector.setSm(sm);
+		return S3_AsBmlLitho(s3String);
 	}
 
 }
