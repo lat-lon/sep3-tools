@@ -66,11 +66,10 @@ public class LaunchBML {
 
 		String[] compList = visitor.visit(tree).split(", ");
 		String[] trimmedArray = new String[compList.length];
-		ArrayList<String> resultList = new ArrayList();
 		for (int i = 0; i < compList.length; i++) {
 			trimmedArray[i] = compList[i].trim();
 		}
-		Set<String> set = new HashSet<>();
+		Set<String> set = new LinkedHashSet<>();
 		Collections.addAll(set, trimmedArray);
 		String resultString = set.toString().replaceAll(" , ", " ");
 		resultString = resultString.substring(1, resultString.length() - 1);
