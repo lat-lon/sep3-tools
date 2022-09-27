@@ -134,17 +134,19 @@ SELECT sqlj.install_jar('file:///<PATH_TO_SEP3-TOOLS>/target/sep3-parser-0.0.1-S
 SELECT sqlj.set_classpath('public', 'sep3');
 ```
 
-Verify the installation by executing the function `parseS3()`:
+Verify the installation by executing the function `S3_AsText()`:
 ```postgres-sql
-SELECT parseS3('^u');
+SELECT S3_AsText('^u');
 ```
 You can get the description of the function by executing the `\df` command:
 
 ```postgres-sql
-postgres=#  \df *parseS3*
-                           List of functions
- Schema |  Name   | Result data type  |   Argument data types    | Type 
---------+---------+-------------------+--------------------------+------
- public | parses3 | character varying | s3code character varying | func
-(1 row)
+petroparser=# \df *s3_astext*
+                                                   List of functions
+ Schema |   Name    | Result data type  |                          Argument data types                           | Type 
+--------+-----------+-------------------+------------------------------------------------------------------------+------
+ public | s3_astext | character varying | s3string character varying                                             | func
+ public | s3_astext | character varying | s3string character varying, wb character varying, st character varying | func
+(2 rows)
+
 ```
