@@ -10,6 +10,8 @@ import org.sep3tools.gen.PetroGrammarParser;
 
 import java.util.*;
 
+import static java.util.Objects.isNull;
+
 /**
  * Command line launcher for SEP3 to BML tool
  *
@@ -64,17 +66,25 @@ public class LaunchBML {
 
 		BmlVisitor visitor = new BmlVisitor();
 
-		String[] compList = visitor.visit(tree).split(", ");
+		String initialTranslation = visitor.visit(tree);
+		if (isNull(initialTranslation) || initialTranslation.isEmpty()) {
+			return "";
+		}
+		String[] compList = initialTranslation.split(",");
+
 		String[] trimmedArray = new String[compList.length];
 		for (int i = 0; i < compList.length; i++) {
 			trimmedArray[i] = compList[i].trim();
 		}
 		Set<String> set = new LinkedHashSet<>();
 		Collections.addAll(set, trimmedArray);
-		String resultString = set.toString().replaceAll(" , ", " ");
+
+		String resultString = set.toString();
+		resultString = resultString.replaceAll(" ", "");
+		resultString = resultString.replaceAll(",+", ",");
 		resultString = resultString.substring(1, resultString.length() - 1);
-		if (resultString.startsWith(", ")) {
-			resultString = resultString.substring(2);
+		if (resultString.startsWith(",")) {
+			resultString = resultString.substring(1);
 		}
 		return resultString;
 	}
