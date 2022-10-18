@@ -112,7 +112,7 @@ public class BmlVisitor extends PetroGrammarBaseVisitor<String> {
 	 */
 	@Override
 	public String visitAufzaehlung_b(PetroGrammarParser.Aufzaehlung_bContext ctx) {
-		return visit(ctx.bestandteile(0)) + ", " + visit(ctx.bestandteile(1));
+		return visit(ctx.bestandteile(0)) + "," + visit(ctx.bestandteile(1));
 	}
 
 	/**
@@ -152,7 +152,7 @@ public class BmlVisitor extends PetroGrammarBaseVisitor<String> {
 		if (isNull(attr))
 			return teil;
 
-		return teil + ", " + attr;
+		return teil + "," + attr;
 	}
 
 	/**
@@ -164,11 +164,11 @@ public class BmlVisitor extends PetroGrammarBaseVisitor<String> {
 	public String visitAufzaehlung_a(PetroGrammarParser.Aufzaehlung_aContext ctx) {
 		String att1 = visit(ctx.attribute(0));
 		String att2 = visit(ctx.attribute(1));
-		if (att1.startsWith(", "))
+		if (att1.startsWith(","))
 			att1 = att1.substring(2, att1.length() - 1);
-		if (att2.startsWith(", "))
+		if (att2.startsWith(","))
 			att2 = att2.substring(2, att2.length() - 1);
-		return att1 + ", " + att2;
+		return att1 + "," + att2;
 	}
 
 	/**
@@ -178,7 +178,7 @@ public class BmlVisitor extends PetroGrammarBaseVisitor<String> {
 	 */
 	@Override
 	public String visitUebergang_att(PetroGrammarParser.Uebergang_attContext ctx) {
-		return visit(ctx.attribut(0)) + ", " + visit(ctx.attribut(1));
+		return visit(ctx.attribut(0)) + "," + visit(ctx.attribut(1));
 	}
 
 	/**
