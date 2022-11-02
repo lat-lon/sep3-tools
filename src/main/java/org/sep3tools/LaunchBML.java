@@ -3,6 +3,7 @@ package org.sep3tools;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.postgresql.pljava.annotation.Function;
 import org.sep3tools.gen.PetroGrammarLexer;
@@ -66,7 +67,9 @@ public class LaunchBML {
 
 		BmlVisitor visitor = new BmlVisitor();
 
-		String initialTranslation = visitor.visit(tree);
+		String initialTranslation = "";
+
+		initialTranslation = visitor.visit(tree);
 		if (isNull(initialTranslation) || initialTranslation.isEmpty()) {
 			return "";
 		}
@@ -91,15 +94,35 @@ public class LaunchBML {
 
 	/**
 	 * translates a coded SEP3 String to a human readable format. needed for in database
-	 * use
+	 * use. Returns empty String, if exception is catched.
 	 * @param s3String coded SEP3 string parsing
 	 * @param sm Schluesseltypen mapping table
 	 * @return BML format of SEP3 input
 	 */
 	@Function
 	public static String S3_AsBmlLitho(String s3String, String sm) {
+		try {
+			JavaConnector.setSm(sm);
+			String result = S3_AsBmlLitho(s3String);
+			return result;
+		}
+		catch (Exception e) {
+			return "";
+		}
+	}
+
+	/**
+	 * translates a coded SEP3 String to a human readable format. needed for in database
+	 * use.
+	 * @param s3String coded SEP3 string parsing
+	 * @param sm Schluesseltypen mapping table
+	 * @return BML format of SEP3 input
+	 */
+	@Function
+	public static String S3_AsBmlLitho_verbose(String s3String, String sm) {
 		JavaConnector.setSm(sm);
-		return S3_AsBmlLitho(s3String);
+		String result = S3_AsBmlLitho(s3String);
+		return result;
 	}
 
 }

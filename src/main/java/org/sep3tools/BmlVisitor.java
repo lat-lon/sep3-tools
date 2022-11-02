@@ -165,9 +165,9 @@ public class BmlVisitor extends PetroGrammarBaseVisitor<String> {
 		String att1 = visit(ctx.attribute(0));
 		String att2 = visit(ctx.attribute(1));
 		if (att1.startsWith(","))
-			att1 = att1.substring(2, att1.length() - 1);
+			att1 = att1.substring(1);
 		if (att2.startsWith(","))
-			att2 = att2.substring(2, att2.length() - 1);
+			att2 = att2.substring(1);
 		return att1 + "," + att2;
 	}
 
