@@ -3,7 +3,6 @@ package org.sep3tools;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.postgresql.pljava.annotation.Function;
 import org.sep3tools.gen.PetroGrammarLexer;
@@ -57,8 +56,7 @@ public class LaunchBML {
 	 * @param s3String coded SEP3 string parsing
 	 * @return BML format of SEP3 input
 	 */
-	@Function
-	public static String S3_AsBmlLitho(String s3String) {
+	protected static String S3_AsBmlLitho(String s3String) {
 		CharStream input = CharStreams.fromString(s3String);
 		PetroGrammarLexer lexer = new PetroGrammarLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
