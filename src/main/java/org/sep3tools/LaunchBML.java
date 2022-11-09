@@ -87,6 +87,9 @@ public class LaunchBML {
 		if (resultString.startsWith(",")) {
 			resultString = resultString.substring(1);
 		}
+		if (resultString.endsWith(",")) {
+			resultString = resultString.substring(0, resultString.length() - 1);
+		}
 		return resultString;
 	}
 
