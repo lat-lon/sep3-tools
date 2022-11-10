@@ -55,8 +55,7 @@ public class Launch {
 	 * @param s3String coded SEP3 string parsing
 	 * @return human readable format of SEP3 input
 	 */
-	@Function
-	public static String S3_AsText(String s3String) {
+	protected static String S3_AsText(String s3String) {
 		CharStream input = CharStreams.fromString(s3String);
 		PetroGrammarLexer lexer = new PetroGrammarLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -69,7 +68,7 @@ public class Launch {
 
 	/**
 	 * translates a coded SEP3 String to a human readable format. needed for in database
-	 * use
+	 * use. Returns empty String, if exception is catched.
 	 * @param s3String coded SEP3 string parsing
 	 * @param st Schluesseltypen table
 	 * @param wb Woerterbuch table
@@ -77,6 +76,26 @@ public class Launch {
 	 */
 	@Function
 	public static String S3_AsText(String s3String, String wb, String st) {
+		try {
+			JavaConnector.setWb(wb);
+			JavaConnector.setSt(st);
+			return S3_AsText(s3String);
+		}
+		catch (Exception e) {
+			return "";
+		}
+	}
+
+	/**
+	 * translates a coded SEP3 String to a human readable format. needed for in database
+	 * use
+	 * @param s3String coded SEP3 string parsing
+	 * @param st Schluesseltypen table
+	 * @param wb Woerterbuch table
+	 * @return human readable format of SEP3 input
+	 */
+	@Function
+	public static String S3_AsText_verbose(String s3String, String wb, String st) {
 		JavaConnector.setWb(wb);
 		JavaConnector.setSt(st);
 		return S3_AsText(s3String);
