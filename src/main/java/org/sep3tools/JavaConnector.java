@@ -8,7 +8,7 @@ import java.util.logging.Logger;
  * retrieve translations for SEP3-Codes, quantifiers, etc.
  *
  * @author Jeronimo Wanhoff <kontakt@jeronimowanhoff.de>
- * @author Thorsten Friebe
+ * @author <a href="mailto:friebe@lat-lon.de">Torsten Friebe</a>
  */
 public final class JavaConnector {
 

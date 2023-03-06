@@ -11,7 +11,7 @@ import org.sep3tools.gen.*;
  * Command line launcher for SEP3 tools
  *
  * @author Jeronimo Wanhoff <kontakt@jeronimowanhoff.de>
- * @author Thorsten Friebe
+ * @author <a href="mailto:friebe@lat-lon.de">Torsten Friebe</a>
  * @author Lyn Goltz
  */
 public class Launch {

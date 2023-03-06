@@ -2,6 +2,11 @@ package org.sep3tools;
 
 import java.sql.*;
 
+/**
+ * Command line launcher for SEP3 CLI.
+ *
+ * @author Jeronimo Wanhoff <kontakt@jeronimowanhoff.de>
+ */
 public class LaunchWithSQL {
 
 	static final String DB_URL = "jdbc:postgresql://localhost/petroparser";

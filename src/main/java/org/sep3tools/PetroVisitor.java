@@ -12,7 +12,7 @@ import static org.sep3tools.JavaConnector.getBodenQuant;
  * This class parses a SEP3 String and translates it
  *
  * @author Jeronimo Wanhoff <kontakt@jeronimowanhoff.de>
- * @author Thorsten Friebe
+ * @author <a href="mailto:friebe@lat-lon.de">Torsten Friebe</a>
  */
 public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 
@@ -77,14 +77,14 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		}
 
 		switch (boden) {
-		case "^u":
-			return "Schluffstein";
-		case "^ms":
-			return "Mittelsandstein";
-		case "^gs":
-			return "Grobsandstein";
-		default:
-			return boden;
+			case "^u":
+				return "Schluffstein";
+			case "^ms":
+				return "Mittelsandstein";
+			case "^gs":
+				return "Grobsandstein";
+			default:
+				return boden;
 		}
 	}
 
@@ -121,24 +121,24 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 			}
 		}
 		switch (attr) {
-		case "r2":
-			return "kantengerundet";
-		case "r3":
-			return "mäßig gerundet";
-		case "tw":
-			return "teilweise";
-		case "lw":
-			return "lagenweise";
-		case "gs":
-			return "grobsandig";
-		case "t":
-			return "tonig";
-		case "nf":
-			return "Nachfall";
-		case "bei":
-			return "bei";
-		default:
-			return attr;
+			case "r2":
+				return "kantengerundet";
+			case "r3":
+				return "mäßig gerundet";
+			case "tw":
+				return "teilweise";
+			case "lw":
+				return "lagenweise";
+			case "gs":
+				return "grobsandig";
+			case "t":
+				return "tonig";
+			case "nf":
+				return "Nachfall";
+			case "bei":
+				return "bei";
+			default:
+				return attr;
 		}
 	}
 
