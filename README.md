@@ -19,7 +19,7 @@ Install a [PostgreSQL](https://www.postgresql.org/) database 12+.
 
 Download the dictionary ("Woerterbuch") data from [www.lbeg.niedersachsen.de](https://www.lbeg.niedersachsen.de/karten_daten_publikationen/bohrdatenbank/sep_3/softwaredownloads/software-downloads-875.html) as follows:
 
-- "Schlüssellisten mit Kürzeln und zugehörigem Klartext und Typisierungen" - "Wörterbuch" - "Juli 2021"
+- "Schlüssellisten mit Kürzeln und zugehörigem Klartext und Typisierungen" - "Wörterbuch" - "November 2022"
 
 It's a ZIP file which contains the `accdb` and `mdb` files.
 
@@ -141,7 +141,7 @@ SELECT S3_AsText('^u');
 You can get the description of the function by executing the `\df` command:
 
 ```postgres-sql
-petroparser=# \df *s3_astext*
+petroparser=# \df *s3_*;
                                                    List of functions
  Schema |   Name    | Result data type  |                          Argument data types                           | Type 
 --------+-----------+-------------------+------------------------------------------------------------------------+------
