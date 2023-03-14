@@ -16,7 +16,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
         <pljava.version>1.6.4</pljava.version>
-        <antlr.version>4.11.1</antlr.version>
+        <antlr.version>4.12.0</antlr.version>
     </properties>
 
     <licenses>
