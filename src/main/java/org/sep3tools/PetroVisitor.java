@@ -53,7 +53,29 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	 */
 	@Override
 	public String visitBestandteil(PetroGrammarParser.BestandteilContext ctx) {
-		String boden = ctx.getText();
+		String boden = getBodenTerm(ctx.TEIL().getText());
+		String attrib;
+		if (isNull(ctx.attribute())) {
+			attrib = "";
+		}
+		else {
+			String attr = visit(ctx.attribute());
+			if (isNull(attr)) {
+				attrib = "";
+			}
+			else if (attr.trim().startsWith("(")) {
+				attrib = attr;
+			}
+			else {
+				attrib = " (" + attr + ")";
+			}
+		}
+		// if (ctx.getText().startsWith("("))
+		// return "(" + boden + attrib + ")";
+		return boden + attrib;
+	}
+
+	private String getBodenTerm(String boden) {
 		String bodenTerm = getS3ResultSet(boden);
 		if (!bodenTerm.isEmpty())
 			return bodenTerm;
@@ -75,7 +97,6 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 				}
 			}
 		}
-
 		switch (boden) {
 			case "^u":
 				return "Schluffstein";
@@ -149,7 +170,31 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	 */
 	@Override
 	public String visitUebergang_bes(PetroGrammarParser.Uebergang_besContext ctx) {
-		return visit(ctx.b1) + " bis " + visit(ctx.b2);
+		String teile;
+		String attrib;
+		if (ctx.getText().trim().startsWith("(")) {
+			teile = "(" + visit(ctx.uebergang_bes()) + ")";
+		}
+		else {
+			teile = visit(ctx.b1) + " bis " + visit(ctx.b2);
+		}
+
+		if (isNull(ctx.attribute())) {
+			attrib = "";
+		}
+		else {
+			String attr = visit(ctx.attribute());
+			if (isNull(attr)) {
+				attrib = "";
+			}
+			else if (attr.trim().startsWith("(")) {
+				attrib = attr;
+			}
+			else {
+				attrib = " (" + attr + ")";
+			}
+		}
+		return teile + attrib;
 	}
 
 	/**
@@ -163,24 +208,43 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	}
 
 	/**
+	 * process enumeration (aufzaehlung) of soil in brackets
+	 * @param ctx the parse tree
+	 * @return translated string for soil enumeration parse tree
+	 */
+	@Override
+	public String visitAufzaehlung_b_k(PetroGrammarParser.Aufzaehlung_b_kContext ctx) {
+		String aufz;
+		String attrib;
+
+		aufz = "(" + visit(ctx.bestandteile(0)) + ", " + visit(ctx.bestandteile(1)) + ")";
+		if (isNull(ctx.attribute())) {
+			attrib = "";
+		}
+		else {
+			String attr = visit(ctx.attribute());
+			if (isNull(attr)) {
+				attrib = "";
+			}
+			else if (attr.trim().startsWith("(")) {
+				attrib = attr;
+			}
+			else {
+				attrib = " (" + attr + ")";
+			}
+		}
+		return aufz + attrib;
+
+	}
+
+	/**
 	 * process transition (uebergang) for soil with attributes
 	 * @param ctx the parse tree
 	 * @return translated string for transition parse tree
 	 */
 	@Override
 	public String visitUebergang_b(PetroGrammarParser.Uebergang_bContext ctx) {
-		String teil = visit(ctx.uebergang_bes());
-
-		if (isNull(ctx.attribute()))
-			return teil;
-
-		String attr = visit(ctx.attribute());
-		if (isNull(attr))
-			return teil;
-
-		if (attr.startsWith(" ("))
-			return teil + attr;
-		return teil + " (" + attr + ")";
+		return visit(ctx.uebergang_bes());
 	}
 
 	/**
@@ -190,18 +254,7 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	 */
 	@Override
 	public String visitTeil(PetroGrammarParser.TeilContext ctx) {
-		String teil = visit(ctx.bestandteil());
-
-		if (isNull(ctx.attribute()))
-			return teil;
-
-		String attr = visit(ctx.attribute());
-		if (isNull(attr))
-			return teil;
-
-		if (attr.startsWith(" ("))
-			return teil + attr;
-		return teil + " (" + attr + ")";
+		return visit(ctx.bestandteil());
 	}
 
 	/**

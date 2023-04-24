@@ -3,21 +3,26 @@ grammar PetroGrammar;
 schichtbeschreibung: bestandteile;
 
 bestandteile:
-    bestandteil ( '(' attribute ')' )?    # Teil
-    | bestandteile ',' bestandteile     # Aufzaehlung_b
-    | uebergang_bes ( '(' attribute ')' )?  # Uebergang_b
-
+    bestandteil                                                     # Teil
+    | bestandteile ',' bestandteile                                 # Aufzaehlung_b
+    | '(' bestandteile ',' bestandteile ')' ( '(' attribute ')' )?  # Aufzaehlung_b_k
+    | uebergang_bes                                                 # Uebergang_b
 ;
 
-uebergang_bes: b1=bestandteil '-' b2=bestandteil;
+uebergang_bes:
+    b1=bestandteil  '-' b2=bestandteil
+    | '(' uebergang_bes ')' ( '(' attribute ')' )?
+;
 
-bestandteil: TEIL;
+bestandteil:
+    TEIL ( '(' attribute ')' )?
+    | '(' TEIL  ( '(' attribute ')' )? ')';
 
 attribute:
     attribut                                    # att
     | uebergang_att                             # Uebergang_a
     | attr=attribute '(' unter=attribute ')'    # unter_Attribute
-    | attribute ',' attribute                  # Aufzaehlung_a
+    | attribute ',' attribute                   # Aufzaehlung_a
 ;
 uebergang_att: attribut '-' attribut;
 
