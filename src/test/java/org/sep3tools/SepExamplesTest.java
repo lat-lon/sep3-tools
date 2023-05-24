@@ -12,6 +12,7 @@ package org.sep3tools;/*--------------------------------------------------------
  59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ----------------------------------------------------------------------------*/
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import org.hamcrest.CoreMatchers;
@@ -25,6 +26,7 @@ import java.util.Properties;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@Ignore("Class not ready for automatic tests, integrations tests depend on running database")
 public class SepExamplesTest {
 
 	static final String DB_URL = "jdbc:postgresql://localhost/petroparser";

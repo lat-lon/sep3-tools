@@ -22,8 +22,10 @@ import java.util.Enumeration;
 import java.util.Properties;
 
 import org.hamcrest.CoreMatchers;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore("Class not ready for automatic tests, integrations tests depend on running database")
 public class BmlExamplesTest {
 
 	static final String DB_URL = "jdbc:postgresql://localhost/petroparser";
