@@ -26,6 +26,8 @@ public final class JavaConnector {
 
 	private static String sm = "bml.bml_schluesselmapping";
 
+	private static String df = "PETRO";
+
 	private JavaConnector() {
 	}
 
@@ -39,6 +41,10 @@ public final class JavaConnector {
 
 	public static void setSm(String sm) {
 		JavaConnector.sm = sm;
+	}
+
+	public static void setDf(String df) {
+		JavaConnector.df = df;
 	}
 
 	public static void setUser(String user) {
@@ -64,11 +70,8 @@ public final class JavaConnector {
 	public static String getS3Name(String sep3Code) throws SQLException {
 		Connection conn = DriverManager.getConnection(m_url, user, pass);
 		String query = "select \"Kuerzel\", \"Klartext\" from " + wb + " w join " + st + " s "
-				+ "on w.\"Typ\" = s.\"Nebentypbez\" where (s.\"Datenfeld\" = 'PETRO' "
-				+ "OR s.\"Datenfeld\" = 'BESCHBG' OR s.\"Datenfeld\" = 'BESCHBV' "
-				+ "OR s.\"Datenfeld\" = 'BGRUPPE' OR s.\"Datenfeld\" = 'GENESE' "
-				+ "OR s.\"Datenfeld\" = 'KALKGEH' OR s.\"Datenfeld\" = 'ZUSATZ' "
-				+ "OR s.\"Datenfeld\" = 'FARBE' OR s.\"Datenfeld\" = 'diverse') AND \"Kuerzel\"= ?";
+				+ "on w.\"Typ\" = s.\"Nebentypbez\" where (s.\"Datenfeld\" = '" + df + "' "
+				+ "OR s.\"Datenfeld\" = 'diverse') AND \"Kuerzel\"= ?";
 
 		PreparedStatement stmt = conn.prepareStatement(query);
 		stmt.setString(1, sep3Code);
