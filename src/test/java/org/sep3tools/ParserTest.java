@@ -68,13 +68,13 @@ public class ParserTest {
 	 */
 	@Test
 	public void verifyThatCharacterNotInGrammarIsNotParsed() {
-		CharStream input = CharStreams.fromString("^kal(%Rfl(\"ca\"))");
+		CharStream input = CharStreams.fromString("^kal({Rfl(\"ca\"))");
 		PetroGrammarLexer lexer = new PetroGrammarLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
 		PetroGrammarParser parser = new PetroGrammarParser(tokens);
 		ParseTree tree = parser.schichtbeschreibung();
 
-		assertThat(tree.getText(), not("^kal(%Rfl(\"ca\"))"));
+		assertThat(tree.getText(), not("^kal({Rfl(\"ca\"))"));
 	}
 
 }
