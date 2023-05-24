@@ -34,16 +34,56 @@ public class SepExamplesTest {
 	static final String STTABLE = "woerterbuch.\"Schluesseltypen\"";
 
 	@Test
-	public void verifySepExamples() {
+	public void verifyPetroExamples() {
+		verifySepExamples("PETRO", "petrotest.properties");
+	}
+
+	@Test
+	public void verifyBeschbgExamples() {
+		verifySepExamples("BESCHBG", "beschbgtest.properties");
+	}
+
+	@Test
+	public void verifyBeschbvExamples() {
+		verifySepExamples("BESCHBV", "beschbvtest.properties");
+	}
+
+	@Test
+	public void verifyBgruppeExamples() {
+		verifySepExamples("BGRUPPE", "bgruppetest.properties");
+	}
+
+	@Test
+	public void verifyGeneseExamples() {
+		verifySepExamples("GENESE", "genesetest.properties");
+	}
+
+	@Test
+	public void verifyKalkgehExamples() {
+		verifySepExamples("KALKGEH", "kalkgehtest.properties");
+	}
+
+	@Test
+	public void verifyZusatzExamples() {
+		verifySepExamples("ZUSATZ", "zusatztest.properties");
+	}
+
+	@Test
+	public void verifyFarbeExamples() {
+		verifySepExamples("FARBE", "farbetest.properties");
+	}
+
+	public void verifySepExamples(String df, String propFile) {
 
 		JavaConnector.setUrl(DB_URL);
 		JavaConnector.setUser(USER);
 		JavaConnector.setPass(PASS);
 		JavaConnector.setWb(WBTABLE);
 		JavaConnector.setSt(STTABLE);
+		JavaConnector.setDf(df);
 
 		try {
-			File file = new File("septest.properties");
+			File file = new File(propFile);
 			FileInputStream fileInput = new FileInputStream(file);
 			Properties properties = new Properties();
 			properties.load(fileInput);
