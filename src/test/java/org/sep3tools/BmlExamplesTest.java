@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -28,20 +29,12 @@ import org.junit.Test;
 @Ignore("Class not ready for automatic tests, integrations tests depend on running database")
 public class BmlExamplesTest {
 
-	static final String DB_URL = "jdbc:postgresql://localhost/petroparser";
-	static final String USER = "petroparser";
-	static final String PASS = "PetroParser";
-	static final String SMTABLE = "bml.bml_schluesselmapping";
-
 	@Test
 	public void verifyBmlExamples() {
 
-		JavaConnector.setUrl(DB_URL);
-		JavaConnector.setUser(USER);
-		JavaConnector.setPass(PASS);
-		JavaConnector.setSm(SMTABLE);
-
 		try {
+			JavaConnector.setPropertiesFile("db.properties");
+
 			File file = new File("bmltest.properties");
 			FileInputStream fileInput = new FileInputStream(file);
 			Properties properties = new Properties();

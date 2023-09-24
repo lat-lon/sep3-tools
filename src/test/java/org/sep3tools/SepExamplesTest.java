@@ -21,6 +21,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -29,11 +30,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Ignore("Class not ready for automatic tests, integrations tests depend on running database")
 public class SepExamplesTest {
 
-	static final String DB_URL = "jdbc:postgresql://localhost/petroparser";
-	static final String USER = "petroparser";
-	static final String PASS = "PetroParser";
-	static final String WBTABLE = "woerterbuch.\"Woerterbuch\"";
-	static final String STTABLE = "woerterbuch.\"Schluesseltypen\"";
+	static final String DBPROPFILENAME = "db.properties";
 
 	@Test
 	public void verifyPetroExamples() {
@@ -77,11 +74,8 @@ public class SepExamplesTest {
 
 	public void verifySepExamples(String df, String propFile) {
 
-		JavaConnector.setUrl(DB_URL);
-		JavaConnector.setUser(USER);
-		JavaConnector.setPass(PASS);
-		JavaConnector.setWb(WBTABLE);
-		JavaConnector.setSt(STTABLE);
+		JavaConnector.setPropertiesFile(DBPROPFILENAME);
+
 		JavaConnector.setDf(df);
 
 		try {

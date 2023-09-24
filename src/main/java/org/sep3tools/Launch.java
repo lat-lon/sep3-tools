@@ -7,6 +7,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.postgresql.pljava.annotation.Function;
 import org.sep3tools.gen.*;
 
+import java.sql.SQLException;
+
 /**
  * Command line launcher for SEP3 tools
  *
@@ -37,6 +39,10 @@ public class Launch {
 		}
 		else if (args.length == 1) {
 			sep3String = args[0];
+		}
+		else if (args.length == 2) {
+			JavaConnector.setPropertiesFile(args[0]);
+			sep3String = args[1];
 		}
 		else {
 			System.out.println("Aufruf mit folgenden Parametern:\n"
