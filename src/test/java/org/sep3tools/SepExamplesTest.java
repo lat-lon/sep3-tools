@@ -21,7 +21,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -34,42 +33,42 @@ public class SepExamplesTest {
 
 	@Test
 	public void verifyPetroExamples() {
-		verifySepExamples("PETRO", "petrotest.properties");
+		verifySepExamples("PETRO", "src/main/resources/petrotest.properties");
 	}
 
 	@Test
 	public void verifyBeschbgExamples() {
-		verifySepExamples("BESCHBG", "beschbgtest.properties");
+		verifySepExamples("BESCHBG", "src/main/resources/beschbgtest.properties");
 	}
 
 	@Test
 	public void verifyBeschbvExamples() {
-		verifySepExamples("BESCHBV", "beschbvtest.properties");
+		verifySepExamples("BESCHBV", "src/main/resources/beschbvtest.properties");
 	}
 
 	@Test
 	public void verifyBgruppeExamples() {
-		verifySepExamples("BGRUPPE", "bgruppetest.properties");
+		verifySepExamples("BGRUPPE", "src/main/resources/bgruppetest.properties");
 	}
 
 	@Test
 	public void verifyGeneseExamples() {
-		verifySepExamples("GENESE", "genesetest.properties");
+		verifySepExamples("GENESE", "src/main/resources/genesetest.properties");
 	}
 
 	@Test
 	public void verifyKalkgehExamples() {
-		verifySepExamples("KALKGEH", "kalkgehtest.properties");
+		verifySepExamples("KALKGEH", "src/main/resources/kalkgehtest.properties");
 	}
 
 	@Test
 	public void verifyZusatzExamples() {
-		verifySepExamples("ZUSATZ", "zusatztest.properties");
+		verifySepExamples("ZUSATZ", "src/main/resources/zusatztest.properties");
 	}
 
 	@Test
 	public void verifyFarbeExamples() {
-		verifySepExamples("FARBE", "farbetest.properties");
+		verifySepExamples("FARBE", "src/main/resources/farbetest.properties");
 	}
 
 	public void verifySepExamples(String df, String propFile) {
@@ -91,8 +90,6 @@ public class SepExamplesTest {
 				String expectedTranslation = properties.getProperty(sep3String);
 				String translation = Launch.S3_AsText(sep3String);
 				assertThat(translation, CoreMatchers.is(expectedTranslation));
-				// System.out.println(sep3String + " transation matched expected value: "
-				// + translation);
 			}
 		}
 		catch (FileNotFoundException e) {

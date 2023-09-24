@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.*;
-import java.util.Enumeration;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -22,7 +21,7 @@ public final class JavaConnector {
 
 	private static final Logger LOG = Logger.getLogger(JavaConnector.class.getName());
 
-	private static String m_url;
+	private static String m_url = "jdbc:default:connection";
 
 	private static String user;
 
