@@ -102,6 +102,7 @@ public final class JavaConnector {
 		if (conn != null && !conn.isClosed())
 			conn.close();
 		JavaConnector.conn = DriverManager.getConnection(url, user, pass);
+		credChanged = false;
 	}
 
 	/**
