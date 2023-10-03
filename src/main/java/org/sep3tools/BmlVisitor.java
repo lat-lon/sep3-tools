@@ -46,13 +46,11 @@ public class BmlVisitor extends PetroGrammarBaseVisitor<String> {
 		return visitChildren(ctx);
 	}
 
-	/**
-	 * process single soil, remove quantifier, if present
-	 * @param ctx the parse tree
-	 * @return translated string for soil parse tree
-	 */
-	@Override
-	public String visitBestandteil(PetroGrammarParser.BestandteilContext ctx) {
+	public String visitBestandteil_klammer(PetroGrammarParser.Bestandteil_klammerContext ctx) {
+		return visitBestandteil_simple((PetroGrammarParser.Bestandteil_simpleContext) ctx.bestandteil());
+	}
+
+	public String visitBestandteil_simple(PetroGrammarParser.Bestandteil_simpleContext ctx) {
 		String boden = getBodenTerm(ctx.TEIL().getText());
 		String attrib;
 		if (isNull(ctx.attribute())) {
@@ -71,6 +69,26 @@ public class BmlVisitor extends PetroGrammarBaseVisitor<String> {
 			}
 		}
 		return boden + "," + attrib;
+	}
+
+	/**
+	 * Visit a parse tree produced by the {@code bestandteil_sicher} labeled alternative
+	 * in {@link PetroGrammarParser}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	public String visitBestandteil_sicher(PetroGrammarParser.Bestandteil_sicherContext ctx) {
+		return visitChildren(ctx);
+	}
+
+	/**
+	 * Visit a parse tree produced by the {@code bestandteil_fraglich} labeled alternative
+	 * in {@link PetroGrammarParser}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	public String visitBestandteil_fraglich(PetroGrammarParser.Bestandteil_fraglichContext ctx) {
+		return visitChildren(ctx);
 	}
 
 	private String getBodenTerm(String boden) {

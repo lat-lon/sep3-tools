@@ -47,12 +47,22 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	}
 
 	/**
-	 * process single soil takes quantifier into account, if present
+	 * Visit a parse tree produced by the {@code bestandteil_klammer} labeled alternative
+	 * in {@link PetroGrammarParser}.
 	 * @param ctx the parse tree
-	 * @return translated string for soil parse tree
+	 * @return the visitor result
 	 */
-	@Override
-	public String visitBestandteil(PetroGrammarParser.BestandteilContext ctx) {
+	public String visitBestandteil_klammer(PetroGrammarParser.Bestandteil_klammerContext ctx) {
+		return visitBestandteil_simple((PetroGrammarParser.Bestandteil_simpleContext) ctx.bestandteil());
+	}
+
+	/**
+	 * Visit a parse tree produced by the {@code bestandteil_simple} labeled alternative
+	 * in {@link PetroGrammarParser}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	public String visitBestandteil_simple(PetroGrammarParser.Bestandteil_simpleContext ctx) {
 		String boden = getBodenTerm(ctx.TEIL().getText());
 		String attrib;
 		if (isNull(ctx.attribute())) {
@@ -70,9 +80,27 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 				attrib = " (" + attr + ")";
 			}
 		}
-		// if (ctx.getText().startsWith("("))
-		// return "(" + boden + attrib + ")";
 		return boden + attrib;
+	}
+
+	/**
+	 * Visit a parse tree produced by the {@code bestandteil_sicher} labeled alternative
+	 * in {@link PetroGrammarParser}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	public String visitBestandteil_sicher(PetroGrammarParser.Bestandteil_sicherContext ctx) {
+		return visitChildren(ctx) + " sicher";
+	}
+
+	/**
+	 * Visit a parse tree produced by the {@code bestandteil_fraglich} labeled alternative
+	 * in {@link PetroGrammarParser}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	public String visitBestandteil_fraglich(PetroGrammarParser.Bestandteil_fraglichContext ctx) {
+		return visitChildren(ctx) + " fraglich";
 	}
 
 	private String getBodenTerm(String boden) {
