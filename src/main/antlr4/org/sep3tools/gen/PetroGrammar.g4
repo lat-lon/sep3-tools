@@ -26,6 +26,7 @@ attribute:
     | uebergang_att                             # Uebergang_a
     | attr=attribute '(' unter=attribute ')'    # unter_Attribute
     | attribute ',' attribute                   # Aufzaehlung_a
+    | '(' attribute ')' '(' attribute ')'       # Aufzaehlung_a_klammer
 ;
 
 uebergang_att: attribut '-' attribut;

@@ -220,6 +220,17 @@ public class BmlVisitor extends PetroGrammarBaseVisitor<String> {
 		return att1 + "," + att2;
 	}
 
+	@Override
+	public String visitAufzaehlung_a_klammer(PetroGrammarParser.Aufzaehlung_a_klammerContext ctx) {
+		String att1 = visit(ctx.attribute(0));
+		String att2 = visit(ctx.attribute(1));
+		if (att1.startsWith(","))
+			att1 = att1.substring(1);
+		if (att2.startsWith(","))
+			att2 = att2.substring(1);
+		return att1 + "," + att2;
+	}
+
 	/**
 	 * process transition (uebergang) for attributes
 	 * @param ctx the parse tree
