@@ -122,14 +122,21 @@ public class BmlVisitor extends PetroGrammarBaseVisitor<String> {
 	 */
 	@Override
 	public String visitUebergang_bes(PetroGrammarParser.Uebergang_besContext ctx) {
-		String teile;
+		String teile = "";
 		String attrib;
 
 		if (ctx.getText().startsWith(" (")) {
 			teile = visit(ctx.uebergang_bes());
 		}
 		else {
-			teile = visit(ctx.b1) + ", " + visit(ctx.b2);
+			for (PetroGrammarParser.BestandteilContext teil : ctx.bestandteil()) {
+				if (teile.isEmpty()) {
+					teile = visit(teil);
+				}
+				else {
+					teile = teile + ", " + visit(teil);
+				}
+			}
 		}
 		if (isNull(ctx.attribute())) {
 			attrib = "";

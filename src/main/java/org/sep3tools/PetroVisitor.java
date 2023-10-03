@@ -170,15 +170,21 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	 */
 	@Override
 	public String visitUebergang_bes(PetroGrammarParser.Uebergang_besContext ctx) {
-		String teile;
+		String teile = "";
 		String attrib;
 		if (ctx.getText().trim().startsWith("(")) {
 			teile = "(" + visit(ctx.uebergang_bes()) + ")";
 		}
 		else {
-			teile = visit(ctx.b1) + " bis " + visit(ctx.b2);
+			for (PetroGrammarParser.BestandteilContext teil : ctx.bestandteil()) {
+				if (teile.isEmpty()) {
+					teile = visit(teil);
+				}
+				else {
+					teile = teile + " bis " + visit(teil);
+				}
+			}
 		}
-
 		if (isNull(ctx.attribute())) {
 			attrib = "";
 		}

@@ -35,7 +35,7 @@ public class BmlExamplesTest {
 		try {
 			JavaConnector.setPropertiesFile("db.properties");
 
-			File file = new File("bmltest.properties");
+			File file = new File("src/main/resources/bmltest.properties");
 			FileInputStream fileInput = new FileInputStream(file);
 			Properties properties = new Properties();
 			properties.load(fileInput);

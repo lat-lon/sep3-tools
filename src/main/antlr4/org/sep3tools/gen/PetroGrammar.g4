@@ -10,7 +10,7 @@ bestandteile:
 ;
 
 uebergang_bes:
-    b1=bestandteil  '-' b2=bestandteil
+    bestandteil  ('-' bestandteil)+
     | '(' uebergang_bes ')' ( '(' attribute ')' )?
 ;
 
