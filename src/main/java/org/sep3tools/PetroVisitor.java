@@ -131,20 +131,20 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 			String partialTermForColor = forColorSeparation.substring(forColorSeparation.length() - partialBodenLength);
 			String colorPart = getS3ResultSet(partialTermForColor);
 			if (!colorPart.isEmpty()) {
-                bodenTerm.insert(0, colorPart);
-                if (partialTermForColor.equals(forColorSeparation)) {
-                    return bodenTerm.toString();
-                }
-                forColorSeparation = forColorSeparation.substring(0, forColorSeparation.length() - partialBodenLength);
-                partialBodenLength = 1;
-                if (!forColorSeparation.endsWith("dd")
-                        && (forColorSeparation.endsWith("h") || forColorSeparation.endsWith("d"))) {
-                    partialBodenLength = 0;
-                }
-            }
-            partialBodenLength++;
-        }
-        if (bodenTerm.length() > 0) {
+				bodenTerm.insert(0, colorPart);
+				if (partialTermForColor.equals(forColorSeparation)) {
+					return bodenTerm.toString();
+				}
+				forColorSeparation = forColorSeparation.substring(0, forColorSeparation.length() - partialBodenLength);
+				partialBodenLength = 1;
+				if (!forColorSeparation.endsWith("dd")
+						&& (forColorSeparation.endsWith("h") || forColorSeparation.endsWith("d"))) {
+					partialBodenLength = 0;
+				}
+			}
+			partialBodenLength++;
+		}
+		if (bodenTerm.length() > 0) {
 			return bodenTerm.toString();
 		}
 		switch (boden) {
