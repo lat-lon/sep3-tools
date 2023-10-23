@@ -104,14 +104,14 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	}
 
 	private String getBodenTerm(String boden) {
-		String bodenTerm = getS3ResultSet(boden);
-		if (!bodenTerm.isEmpty())
-			return bodenTerm;
+		StringBuilder bodenTerm = new StringBuilder(getS3ResultSet(boden));
+		if (bodenTerm.length() > 0)
+			return bodenTerm.toString();
 		for (int i = 0; i <= MAX_QUANTIFIER; i++) {
 			if (boden.endsWith(String.valueOf(i))) {
 				String bodenShort = boden.substring(0, boden.length() - 1);
-				bodenTerm = getS3ResultSet(bodenShort);
-				if (!bodenTerm.isEmpty()) {
+				bodenTerm = new StringBuilder(getS3ResultSet(bodenShort));
+				if (bodenTerm.length() > 0) {
 					String bodenQuant = String.valueOf(i);
 					try {
 						bodenQuant = getBodenQuant(bodenShort, String.valueOf(i));
@@ -124,6 +124,28 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 					return bodenTerm + bodenQuant;
 				}
 			}
+		}
+		String forColorSeparation = boden;
+		int partialBodenLength = 2;
+		while (partialBodenLength <= forColorSeparation.length()) {
+			String partialTermForColor = forColorSeparation.substring(forColorSeparation.length() - partialBodenLength);
+			String colorPart = getS3ResultSet(partialTermForColor);
+			if (!colorPart.isEmpty()) {
+				bodenTerm.insert(0, colorPart);
+				if (partialTermForColor.equals(forColorSeparation)) {
+					return bodenTerm.toString();
+				}
+				forColorSeparation = forColorSeparation.substring(0, forColorSeparation.length() - partialBodenLength);
+				partialBodenLength = 1;
+				if (!forColorSeparation.endsWith("dd")
+						&& (forColorSeparation.endsWith("h") || forColorSeparation.endsWith("d"))) {
+					partialBodenLength = 0;
+				}
+			}
+			partialBodenLength++;
+		}
+		if (bodenTerm.length() > 0) {
+			return bodenTerm.toString();
 		}
 		switch (boden) {
 			case "^u":
