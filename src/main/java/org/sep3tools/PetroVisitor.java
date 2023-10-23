@@ -308,6 +308,22 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	}
 
 	/**
+	 * process enumeration (aufzaehlung) of attributes
+	 * @param ctx the parse tree
+	 * @return translated string for attribute enumeration parse tree
+	 */
+	@Override
+	public String visitAufzaehlung_a_klammer(PetroGrammarParser.Aufzaehlung_a_klammerContext ctx) {
+		String att1 = visit(ctx.attribute(0));
+		String att2 = visit(ctx.attribute(1));
+		if (att1.startsWith(" ("))
+			att1 = att1.substring(2, att1.length() - 1);
+		if (att2.startsWith(" ("))
+			att2 = att2.substring(2, att2.length() - 1);
+		return " (" + att1 + ") (" + att2 + ")";
+	}
+
+	/**
 	 * process transition (uebergang) for attributes
 	 * @param ctx the parse tree
 	 * @return translated string for transition parse tree
