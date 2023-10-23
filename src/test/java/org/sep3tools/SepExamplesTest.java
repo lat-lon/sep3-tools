@@ -34,6 +34,7 @@ public class SepExamplesTest {
 	@Test
 	public void verifyPetroExamples() {
 		verifySepExamples("PETRO", "src/main/resources/petrotest.properties");
+
 	}
 
 	@Test
@@ -74,7 +75,6 @@ public class SepExamplesTest {
 	public void verifySepExamples(String df, String propFile) {
 
 		JavaConnector.setPropertiesFile(DBPROPFILENAME);
-
 		JavaConnector.setDf(df);
 
 		try {
