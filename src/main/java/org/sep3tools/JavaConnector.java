@@ -37,8 +37,6 @@ public final class JavaConnector {
 
 	private static Connection conn;
 
-	private static String df = "PETRO";
-
 	private JavaConnector() {
 	}
 
