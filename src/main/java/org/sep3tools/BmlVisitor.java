@@ -1,7 +1,6 @@
 package org.sep3tools;
 
 import static java.util.Objects.isNull;
-import static org.sep3tools.JavaConnector.getBodenQuant;
 
 import java.sql.SQLException;
 import java.util.logging.Logger;

@@ -112,9 +112,55 @@ public final class JavaConnector {
 	 * @throws SQLException if DB error occurs
 	 */
 	public static String getS3Name(String sep3Code) throws SQLException {
-		String query = "select kuerzel, klartext from " + wb + " w join " + st + " s "
-				+ "on w.typ = s.nebentypbez where (s.datenfeld = '" + df + "' "
+		String query = getQueryString(wb, st, df);
+
+		if (credChanged)
+			setConn(m_url, user, pass);
+		PreparedStatement stmt = conn.prepareStatement(query);
+		stmt.setString(1, sep3Code);
+		LOG.fine("Executing statement: " + stmt);
+		try (ResultSet rs = stmt.executeQuery()) {
+			boolean validRS = rs.next();
+			String result = "";
+			if (validRS) {
+				result = rs.getString(2);
+			}
+			LOG.fine("Returning: " + result);
+
+			rs.close();
+			stmt.close();
+
+			return result;
+		}
+	}
+
+	private static String getQueryString(String woerterbuch, String schluesselypen, String datenfeld) {
+		return "select kuerzel, klartext from " + woerterbuch + " w join " + schluesselypen + " s "
+				+ "on w.typ = s.nebentypbez where (s.datenfeld = '" + datenfeld + "' "
 				+ "OR s.datenfeld = 'diverse') AND kuerzel= ?";
+	}
+
+	public static String getS3inDfName(String datefield, String sep3Code) throws SQLException {
+		String query;
+		switch (datefield) {
+			case "S:":
+				query = getQueryString(wb, st, "STRAT");
+				break;
+			case "P:":
+				query = getQueryString(wb, st, "PETRO");
+				break;
+			case "G:":
+				query = getQueryString(wb, st, "GENESE");
+				break;
+			case "F:":
+				query = getQueryString(wb, st, "FARBE");
+				break;
+			case "Z:":
+				query = getQueryString(wb, st, "ZUSATZ");
+				break;
+			default:
+				query = getQueryString(wb, st, df);
+		}
 
 		if (credChanged)
 			setConn(m_url, user, pass);
@@ -201,7 +247,7 @@ public final class JavaConnector {
 	 * @return quantifier based on sep3 code and quantifyer
 	 * @throws SQLException in case of DB error
 	 */
-	public static String getBodenQuant(String sep3Code, String quant) throws SQLException {
+	public static String getItemQuant(String sep3Code, String quant) throws SQLException {
 		String allowedAttributes;
 		String quantBez;
 

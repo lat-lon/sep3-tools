@@ -6,7 +6,7 @@ import java.sql.*;
 import java.util.logging.Logger;
 
 import static java.util.Objects.isNull;
-import static org.sep3tools.JavaConnector.getBodenQuant;
+import static org.sep3tools.JavaConnector.*;
 
 /**
  * This class parses a SEP3 String and translates it
@@ -36,6 +36,17 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		return "";
 	}
 
+	private static String getS3InDfResultSet(String df, String searchTerm) {
+		try {
+			return JavaConnector.getS3inDfName(df, searchTerm);
+		}
+		catch (SQLException e) {
+			LOG.warning("Dictionary is not available, fallback to internal dictionary if possible." + " Caused by "
+					+ e.getLocalizedMessage());
+		}
+		return "";
+	}
+
 	/**
 	 * process complete SEP3 string
 	 * @param ctx the parse tree
@@ -53,7 +64,32 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	 * @return the visitor result
 	 */
 	public String visitBestandteil_klammer(PetroGrammarParser.Bestandteil_klammerContext ctx) {
-		return visitBestandteil_simple((PetroGrammarParser.Bestandteil_simpleContext) ctx.bestandteil());
+		String boden = "";
+		if (ctx.bestandteil() instanceof PetroGrammarParser.Bestandteil_simpleContext) {
+			boden = "(" + visitBestandteil_simple((PetroGrammarParser.Bestandteil_simpleContext) ctx.bestandteil())
+					+ ")";
+		}
+		if (ctx.bestandteil() instanceof PetroGrammarParser.Bestandteil_fremddatenfeldContext) {
+			boden = "(" + visitBestandteil_fremddatenfeld(
+					(PetroGrammarParser.Bestandteil_fremddatenfeldContext) ctx.bestandteil()) + ")";
+		}
+		String attrib;
+		if (isNull(ctx.attribute())) {
+			attrib = "";
+		}
+		else {
+			String attr = visit(ctx.attribute());
+			if (isNull(attr)) {
+				attrib = "";
+			}
+			else if (attr.trim().startsWith("(")) {
+				attrib = attr;
+			}
+			else {
+				attrib = " (" + attr + ")";
+			}
+		}
+		return boden + attrib;
 	}
 
 	/**
@@ -83,6 +119,25 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		return boden + attrib;
 	}
 
+	// @Override
+	public String visitBestandteil_fremddatenfeld(PetroGrammarParser.Bestandteil_fremddatenfeldContext ctx) {
+		String dfKuerzel = ctx.DATENFELDKUERZEL().getText();
+		String teil = ctx.TEIL().getText();
+		if (!isNull(teil)) {
+			String attrTerm = getS3InDfResultSet(dfKuerzel, teil);
+			if (!attrTerm.isEmpty()) {
+				return attrTerm;
+			}
+		}
+		String teilQuant = getQuantifiedDfTerm(dfKuerzel, teil);
+		if (teilQuant != null)
+			return teilQuant;
+		String colorTerm = getColorString(teil);
+		if (colorTerm != null)
+			return colorTerm;
+		return dfKuerzel + teil;
+	}
+
 	/**
 	 * Visit a parse tree produced by the {@code bestandteil_sicher} labeled alternative
 	 * in {@link PetroGrammarParser}.
@@ -104,49 +159,15 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	}
 
 	private String getBodenTerm(String boden) {
-		StringBuilder bodenTerm = new StringBuilder(getS3ResultSet(boden));
+		String bodenTerm = getS3ResultSet(boden);
 		if (bodenTerm.length() > 0)
 			return bodenTerm.toString();
-		for (int i = 0; i <= MAX_QUANTIFIER; i++) {
-			if (boden.endsWith(String.valueOf(i))) {
-				String bodenShort = boden.substring(0, boden.length() - 1);
-				bodenTerm = new StringBuilder(getS3ResultSet(bodenShort));
-				if (bodenTerm.length() > 0) {
-					String bodenQuant = String.valueOf(i);
-					try {
-						bodenQuant = getBodenQuant(bodenShort, String.valueOf(i));
-						return bodenQuant + " " + bodenTerm;
-					}
-					catch (SQLException e) {
-						LOG.warning(
-								"Quantifier not found, fallback to digit." + " Caused by " + e.getLocalizedMessage());
-					}
-					return bodenTerm + bodenQuant;
-				}
-			}
-		}
-		String forColorSeparation = boden;
-		int partialBodenLength = 2;
-		while (partialBodenLength <= forColorSeparation.length()) {
-			String partialTermForColor = forColorSeparation.substring(forColorSeparation.length() - partialBodenLength);
-			String colorPart = getS3ResultSet(partialTermForColor);
-			if (!colorPart.isEmpty()) {
-                bodenTerm.insert(0, colorPart);
-                if (partialTermForColor.equals(forColorSeparation)) {
-                    return bodenTerm.toString();
-                }
-                forColorSeparation = forColorSeparation.substring(0, forColorSeparation.length() - partialBodenLength);
-                partialBodenLength = 1;
-                if (!forColorSeparation.endsWith("dd")
-                        && (forColorSeparation.endsWith("h") || forColorSeparation.endsWith("d"))) {
-                    partialBodenLength = 0;
-                }
-            }
-            partialBodenLength++;
-        }
-        if (bodenTerm.length() > 0) {
-			return bodenTerm.toString();
-		}
+		String bodenQuant = getQuantifiedTerm(boden);
+		if (bodenQuant != null)
+			return bodenQuant;
+		bodenTerm = getColorString(boden);
+		if (bodenTerm != null)
+			return bodenTerm;
 		switch (boden) {
 			case "^u":
 				return "Schluffstein";
@@ -157,6 +178,76 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 			default:
 				return boden;
 		}
+	}
+
+	private static String getQuantifiedTerm(String sepItem) {
+		String sep3Term;
+		for (int i = 0; i <= MAX_QUANTIFIER; i++) {
+			if (sepItem.endsWith(String.valueOf(i))) {
+				String shortItem = sepItem.substring(0, sepItem.length() - 1);
+				sep3Term = getS3ResultSet(shortItem);
+				if (!sep3Term.isEmpty()) {
+					String itemQuant = String.valueOf(i);
+					try {
+						itemQuant = getItemQuant(shortItem, String.valueOf(i));
+						return itemQuant + " " + sep3Term;
+					}
+					catch (SQLException e) {
+						LOG.warning(
+								"Quantifier not found, fallback to digit." + " Caused by " + e.getLocalizedMessage());
+					}
+					return sep3Term + itemQuant;
+				}
+			}
+		}
+		return null;
+	}
+
+	private static String getQuantifiedDfTerm(String datenfeld, String sepItem) {
+		String sep3Term;
+		for (int i = 0; i <= MAX_QUANTIFIER; i++) {
+			if (sepItem.endsWith(String.valueOf(i))) {
+				String shortItem = sepItem.substring(0, sepItem.length() - 1);
+				sep3Term = getS3InDfResultSet(datenfeld, shortItem);
+				if (!sep3Term.isEmpty()) {
+					String itemQuant = String.valueOf(i);
+					try {
+						itemQuant = getItemQuant(shortItem, String.valueOf(i));
+						return itemQuant + " " + sep3Term;
+					}
+					catch (SQLException e) {
+						LOG.warning(
+								"Quantifier not found, fallback to digit." + " Caused by " + e.getLocalizedMessage());
+					}
+					return sep3Term + itemQuant;
+				}
+			}
+		}
+		return null;
+	}
+
+	private static String getColorString(String color) {
+		String bodenTerm = "";
+		String forColorSeparation = color;
+		int partialBodenLength = 2;
+		while (partialBodenLength <= forColorSeparation.length()) {
+			String partialTermForColor = forColorSeparation.substring(forColorSeparation.length() - partialBodenLength);
+			String colorPart = getS3InDfResultSet("F:", partialTermForColor);
+			if (!colorPart.isEmpty()) {
+				bodenTerm = colorPart + bodenTerm;
+				if (partialTermForColor.equals(forColorSeparation)) {
+					return bodenTerm;
+				}
+				forColorSeparation = forColorSeparation.substring(0, forColorSeparation.length() - partialBodenLength);
+				partialBodenLength = 1;
+				if (!forColorSeparation.endsWith("dd")
+						&& (forColorSeparation.endsWith("h") || forColorSeparation.endsWith("d"))) {
+					partialBodenLength = 0;
+				}
+			}
+			partialBodenLength++;
+		}
+		return null;
 	}
 
 	/**
@@ -172,24 +263,9 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 			if (!attrTerm.isEmpty()) {
 				return attrTerm;
 			}
-			for (int i = 0; i <= MAX_QUANTIFIER; i++) {
-				if (attr.endsWith(String.valueOf(i))) {
-					String attrShort = attr.substring(0, attr.length() - 1);
-					attrTerm = getS3ResultSet(attrShort);
-					if (!attrTerm.isEmpty()) {
-						String attrQuant = String.valueOf(i);
-						try {
-							attrQuant = getBodenQuant(attrShort, String.valueOf(i));
-							return attrQuant + " " + attrTerm;
-						}
-						catch (SQLException e) {
-							LOG.warning("Quantifier not found, fallback to digit." + " Caused by "
-									+ e.getLocalizedMessage());
-						}
-						return attrTerm + attrQuant;
-					}
-				}
-			}
+			String attrQuant = getQuantifiedTerm(attr);
+			if (attrQuant != null)
+				return attrQuant;
 		}
 		switch (attr) {
 			case "r2":
@@ -211,6 +287,22 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 			default:
 				return attr;
 		}
+	}
+
+	@Override
+	public String visitAttr_fremddatenfeld(PetroGrammarParser.Attr_fremddatenfeldContext ctx) {
+		String dfKuerzel = ctx.DATENFELDKUERZEL().getText();
+		String attr = ctx.TEIL().getText();
+		if (!isNull(attr)) {
+			String attrTerm = getS3InDfResultSet(dfKuerzel, attr);
+			if (!attrTerm.isEmpty()) {
+				return attrTerm;
+			}
+		}
+		String colorTerm = getColorString(attr);
+		if (colorTerm != null)
+			return colorTerm;
+		return dfKuerzel + attr;
 	}
 
 	/**
