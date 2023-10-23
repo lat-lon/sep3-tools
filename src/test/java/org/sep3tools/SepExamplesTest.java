@@ -29,59 +29,52 @@ import static org.hamcrest.MatcherAssert.assertThat;
 @Ignore("Class not ready for automatic tests, integrations tests depend on running database")
 public class SepExamplesTest {
 
-	static final String DB_URL = "jdbc:postgresql://localhost/petroparser";
-	static final String USER = "petroparser";
-	static final String PASS = "PetroParser";
-	static final String WBTABLE = "woerterbuch.\"Woerterbuch\"";
-	static final String STTABLE = "woerterbuch.\"Schluesseltypen\"";
+	static final String DBPROPFILENAME = "db.properties";
 
 	@Test
 	public void verifyPetroExamples() {
-		verifySepExamples("PETRO", "petrotest.properties");
+		verifySepExamples("PETRO", "src/main/resources/petrotest.properties");
+
 	}
 
 	@Test
 	public void verifyBeschbgExamples() {
-		verifySepExamples("BESCHBG", "beschbgtest.properties");
+		verifySepExamples("BESCHBG", "src/main/resources/beschbgtest.properties");
 	}
 
 	@Test
 	public void verifyBeschbvExamples() {
-		verifySepExamples("BESCHBV", "beschbvtest.properties");
+		verifySepExamples("BESCHBV", "src/main/resources/beschbvtest.properties");
 	}
 
 	@Test
 	public void verifyBgruppeExamples() {
-		verifySepExamples("BGRUPPE", "bgruppetest.properties");
+		verifySepExamples("BGRUPPE", "src/main/resources/bgruppetest.properties");
 	}
 
 	@Test
 	public void verifyGeneseExamples() {
-		verifySepExamples("GENESE", "genesetest.properties");
+		verifySepExamples("GENESE", "src/main/resources/genesetest.properties");
 	}
 
 	@Test
 	public void verifyKalkgehExamples() {
-		verifySepExamples("KALKGEH", "kalkgehtest.properties");
+		verifySepExamples("KALKGEH", "src/main/resources/kalkgehtest.properties");
 	}
 
 	@Test
 	public void verifyZusatzExamples() {
-		verifySepExamples("ZUSATZ", "zusatztest.properties");
+		verifySepExamples("ZUSATZ", "src/main/resources/zusatztest.properties");
 	}
 
 	@Test
 	public void verifyFarbeExamples() {
-		verifySepExamples("FARBE", "farbetest.properties");
+		verifySepExamples("FARBE", "src/main/resources/farbetest.properties");
 	}
 
 	public void verifySepExamples(String df, String propFile) {
 
-		JavaConnector.setUrl(DB_URL);
-		JavaConnector.setUser(USER);
-		JavaConnector.setPass(PASS);
-		JavaConnector.setWb(WBTABLE);
-		JavaConnector.setSt(STTABLE);
+		JavaConnector.setPropertiesFile(DBPROPFILENAME);
 		JavaConnector.setDf(df);
 
 		try {
@@ -97,8 +90,6 @@ public class SepExamplesTest {
 				String expectedTranslation = properties.getProperty(sep3String);
 				String translation = Launch.S3_AsText(sep3String);
 				assertThat(translation, CoreMatchers.is(expectedTranslation));
-				// System.out.println(sep3String + " transation matched expected value: "
-				// + translation);
 			}
 		}
 		catch (FileNotFoundException e) {

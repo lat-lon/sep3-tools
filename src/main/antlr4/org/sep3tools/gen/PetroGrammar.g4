@@ -10,13 +10,16 @@ bestandteile:
 ;
 
 uebergang_bes:
-    b1=bestandteil  '-' b2=bestandteil
+    bestandteil  ('-' bestandteil)+
     | '(' uebergang_bes ')' ( '(' attribute ')' )?
 ;
 
 bestandteil:
-    TEIL ( '(' attribute ')' )?
-    | '(' TEIL  ( '(' attribute ')' )? ')';
+    TEIL ( '(' attribute ')' )? # bestandteil_simple
+    | '(' bestandteil ')'       # bestandteil_klammer
+    | bestandteil FRAGLICH      # bestandteil_fraglich
+    | bestandteil SICHER        # bestandteil_sicher
+;
 
 attribute:
     attribut                                    # att
@@ -24,6 +27,7 @@ attribute:
     | attr=attribute '(' unter=attribute ')'    # unter_Attribute
     | attribute ',' attribute                   # Aufzaehlung_a
 ;
+
 uebergang_att: attribut '-' attribut;
 
 attribut:
@@ -31,7 +35,7 @@ attribut:
     | attribut FRAGLICH # attr_fraglich
     | attribut SICHER   # attr_sicher
     | TIEFE             # attr_tiefe
-    ;
+;
 
 TIEFE: ([0-9]|'.')+;
 TEIL: ANY+;

@@ -8,12 +8,13 @@ import org.postgresql.pljava.annotation.Function;
 import org.sep3tools.gen.PetroGrammarLexer;
 import org.sep3tools.gen.PetroGrammarParser;
 
+import java.sql.SQLException;
 import java.util.*;
 
 import static java.util.Objects.isNull;
 
 /**
- * Command line launcher for SEP3 to BML tool
+ * Command line launcher for SEP3 to BML tool.
  *
  * @author Jeronimo Wanhoff <kontakt@jeronimowanhoff.de>
  */
@@ -21,7 +22,7 @@ public class LaunchBML {
 
 	/**
 	 * Launches SEP3 tool with arguments:
-	 * @param args DB URL, DB user, DB password, Schluesselmapping table name SEP3 string
+	 * @param args DB URL, DB user, DB password, Schluesselmapping table name SEP3 string.
 	 * to process
 	 */
 	public static void main(String[] args) {
@@ -120,7 +121,7 @@ public class LaunchBML {
 	 * @return BML format of SEP3 input
 	 */
 	@Function
-	public static String S3_AsBmlLitho_verbose(String s3String, String sm) {
+	public static String s3AsBmlLithoVerbose(final String s3String, final String sm) {
 		JavaConnector.setSm(sm);
 		String result = S3_AsBmlLitho(s3String);
 		return result;
