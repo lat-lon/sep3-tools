@@ -7,6 +7,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.postgresql.pljava.annotation.Function;
 import org.sep3tools.gen.*;
 
+import java.sql.SQLException;
+
 /**
  * Command line launcher for SEP3 tools
  *
@@ -23,13 +25,14 @@ public class Launch {
 	 */
 	public static void main(String[] args) {
 		String sep3String;
-		if (args.length == 6) {
+		if (args.length == 7) {
 			JavaConnector.setUrl(args[0]);
 			JavaConnector.setUser(args[1]);
 			JavaConnector.setPass(args[2]);
 			JavaConnector.setWb(args[3]);
 			JavaConnector.setSt(args[4]);
-			sep3String = args[5];
+			JavaConnector.setDf(args[5]);
+			sep3String = args[6];
 		}
 		else if (args.length == 0 || args[0].isEmpty()) {
 			sep3String = "^ms(r2,r3(tw),gs(lw,r2-r3)),^u(t,lw),^gs(r3,bei(113),nf?)";
@@ -37,12 +40,16 @@ public class Launch {
 		else if (args.length == 1) {
 			sep3String = args[0];
 		}
+		else if (args.length == 2) {
+			JavaConnector.setPropertiesFile(args[0]);
+			sep3String = args[1];
+		}
 		else {
 			System.out.println("Aufruf mit folgenden Parametern:\n"
 					+ "[JDBC-URL] [DB-User] [DB-Passwort] [Woerterbuch-Tabelle] [Schlüsseltypen-Tabelle] <SEP3-String>\n\n"
 					+ "Beispiel für Parameter:\n" + "\"jdbc:postgresql://localhost/petroparser\" " + "\"petroDB\" "
 					+ "\"PetroPass\" " + "\"woerterbuch.\\\"\"Woerterbuch\\\"\" "
-					+ "\"woerterbuch.\\\"\"Schluesseltypen\\\"\" "
+					+ "\"woerterbuch.\\\"\"Schluesseltypen\\\"\" PETRO "
 					+ "\"G(fg-gg,ms-gs,mats,mata,grs(tw)),fX-mX(mata),mS(fs,grs,fg-mg2,mx(voe))\"");
 			return;
 		}
@@ -75,10 +82,11 @@ public class Launch {
 	 * @return human readable format of SEP3 input
 	 */
 	@Function
-	public static String S3_AsText(String s3String, String wb, String st) {
+	public static String S3_AsText(String s3String, String wb, String st, String df) {
 		try {
 			JavaConnector.setWb(wb);
 			JavaConnector.setSt(st);
+			JavaConnector.setDf(df);
 			return S3_AsText(s3String);
 		}
 		catch (Exception e) {
@@ -95,9 +103,10 @@ public class Launch {
 	 * @return human readable format of SEP3 input
 	 */
 	@Function
-	public static String S3_AsText_verbose(String s3String, String wb, String st) {
+	public static String S3_AsText_verbose(String s3String, String wb, String st, String df) {
 		JavaConnector.setWb(wb);
 		JavaConnector.setSt(st);
+		JavaConnector.setDf(df);
 		return S3_AsText(s3String);
 	}
 

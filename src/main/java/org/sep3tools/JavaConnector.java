@@ -1,6 +1,11 @@
 package org.sep3tools;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.sql.*;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
@@ -12,21 +17,52 @@ import java.util.logging.Logger;
  */
 public final class JavaConnector {
 
+	private static boolean credChanged = true;
+
 	private static final Logger LOG = Logger.getLogger(JavaConnector.class.getName());
 
 	private static String m_url = "jdbc:default:connection";
 
-	private static String user = "";
+	private static String user;
 
-	private static String pass = "";
+	private static String pass;
 
-	private static String wb = "woerterbuch.\"Woerterbuch\"";
+	private static String wb;
 
-	private static String st = "woerterbuch.\"Schluesseltypen\"";
+	private static String st;
 
-	private static String sm = "bml.bml_schluesselmapping";
+	private static String sm;
+
+	private static String df;
+
+	private static Connection conn;
 
 	private JavaConnector() {
+	}
+
+	public static void setPropertiesFile(String filename) {
+		credChanged = true;
+		try {
+			File file = new File(filename);
+			FileInputStream fileInput = new FileInputStream(file);
+			Properties properties = new Properties();
+			properties.load(fileInput);
+			fileInput.close();
+
+			setUrl(properties.getProperty("URL"));
+			setUser(properties.getProperty("USER"));
+			setPass(properties.getProperty("PASSWORD"));
+			setWb(properties.getProperty("WOERTERBUCH"));
+			setSt(properties.getProperty("SCHLUESSELTYPEN"));
+			setSm(properties.getProperty("SCHLUESSELMAPPING"));
+			setDf(properties.getProperty("DATEFIELD"));
+		}
+		catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public static void setWb(String wb) {
@@ -41,19 +77,33 @@ public final class JavaConnector {
 		JavaConnector.sm = sm;
 	}
 
-	public static void setUser(String user) {
-		JavaConnector.user = user;
+	public static void setDf(String df) {
+		JavaConnector.df = df;
 	}
 
-	public static void setPass(String pass) {
-		JavaConnector.pass = pass;
+	public static void setUser(String newUser) {
+		credChanged = true;
+		JavaConnector.user = newUser;
 	}
 
-	public static void setUrl(String url) {
-		JavaConnector.m_url = url;
+	public static void setPass(String newPass) {
+		credChanged = true;
+		JavaConnector.pass = newPass;
+	}
+
+	public static void setUrl(String newUrl) {
+		credChanged = true;
+		JavaConnector.m_url = newUrl;
 	}
 
 	// String query = "SELECT Klartext from woerterbuch.Woerterbuch where Kuerzel=";
+
+	private static void setConn(String url, String user, String pass) throws SQLException {
+		if (conn != null && !conn.isClosed())
+			conn.close();
+		JavaConnector.conn = DriverManager.getConnection(url, user, pass);
+		credChanged = false;
+	}
 
 	/**
 	 * translates a SEP3 code to clear text
@@ -62,11 +112,12 @@ public final class JavaConnector {
 	 * @throws SQLException if DB error occurs
 	 */
 	public static String getS3Name(String sep3Code) throws SQLException {
-		Connection conn = DriverManager.getConnection(m_url, user, pass);
-		String query = "select \"Kuerzel\", \"Klartext\" from " + wb + " w join " + st + " s "
-				+ "on w.\"Typ\" = s.\"Nebentypbez\" "
-				+ "where (s.\"Datenfeld\" = 'PETRO' OR s.\"Datenfeld\" = 'diverse') AND \"Kuerzel\"= ?";
+		String query = "select kuerzel, klartext from " + wb + " w join " + st + " s "
+				+ "on w.typ = s.nebentypbez where (s.datenfeld = '" + df + "' "
+				+ "OR s.datenfeld = 'diverse') AND kuerzel= ?";
 
+		if (credChanged)
+			setConn(m_url, user, pass);
 		PreparedStatement stmt = conn.prepareStatement(query);
 		stmt.setString(1, sep3Code);
 		LOG.fine("Executing statement: " + stmt);
@@ -77,6 +128,10 @@ public final class JavaConnector {
 				result = rs.getString(2);
 			}
 			LOG.fine("Returning: " + result);
+
+			rs.close();
+			stmt.close();
+
 			return result;
 		}
 	}
@@ -88,9 +143,10 @@ public final class JavaConnector {
 	 * @throws SQLException if DB error occurs
 	 */
 	public static String getS3AsBMmlLitho(String sep3Code) throws SQLException {
-		Connection conn = DriverManager.getConnection(m_url, user, pass);
 		String query = "select bml_code from " + sm + " where sep3_codelist = 'S3PETRO' AND sep3_code = ?";
 
+		if (credChanged)
+			setConn(m_url, user, pass);
 		PreparedStatement stmt = conn.prepareStatement(query);
 		stmt.setString(1, sep3Code);
 		LOG.fine("Executing statement: " + stmt);
@@ -101,6 +157,10 @@ public final class JavaConnector {
 				result = rs.getString(1);
 			}
 			LOG.fine("Returning: " + result);
+
+			rs.close();
+			stmt.close();
+
 			return result;
 		}
 	}
@@ -112,10 +172,10 @@ public final class JavaConnector {
 	 * @throws SQLException if DB error occurs
 	 */
 	public static String getAllowedAttribs(String sep3Code) throws SQLException {
-		Connection conn = DriverManager.getConnection(m_url, user, pass);
-		String query = "select \"Kuerzel\", \"Attribute\" from " + wb + " w join " + st + " s "
-				+ "on w.\"Typ\" = s.\"Nebentypbez\" "
-				+ "where (s.\"Datenfeld\" = 'PETRO' OR s.\"Datenfeld\" = 'diverse') AND \"Kuerzel\"= ?";
+		String query = "select kuerzel, attribute from " + wb + " w join " + st + " s " + "on w.typ = s.nebentypbez "
+				+ "where (s.datenfeld = 'PETRO' OR s.datenfeld = 'diverse') AND kuerzel= ?";
+		if (credChanged)
+			setConn(m_url, user, pass);
 		PreparedStatement stmt = conn.prepareStatement(query);
 		stmt.setString(1, sep3Code);
 		LOG.fine("Executing statement: " + stmt);
@@ -126,6 +186,10 @@ public final class JavaConnector {
 				result = rs.getString(2);
 			}
 			LOG.fine("Returning: " + result);
+
+			rs.close();
+			stmt.close();
+
 			return result;
 		}
 	}
@@ -144,9 +208,10 @@ public final class JavaConnector {
 		allowedAttributes = getAllowedAttribs(sep3Code);
 		quantBez = getQuantBezFromAttribs(allowedAttributes);
 
-		Connection conn = DriverManager.getConnection(m_url, user, pass);
-		String query = "select w.\"Kuerzel\", w.\"Klartext\", s.\"Nebentypbez\" from " + wb + " w join " + st + " s "
-				+ "on w.\"Typ\" = s.\"Nebentypbez\" where (s.\"Nebentypbez\" = ? AND w.\"Kuerzel\" = ?);";
+		String query = "select w.kuerzel, w.klartext, s.nebentypbez from " + wb + " w join " + st + " s "
+				+ "on w.typ = s.nebentypbez where (s.nebentypbez = ? AND w.kuerzel = ?);";
+		if (credChanged)
+			setConn(m_url, user, pass);
 		PreparedStatement stmt = conn.prepareStatement(query);
 		stmt.setString(1, quantBez);
 		stmt.setString(2, quant);
@@ -158,6 +223,9 @@ public final class JavaConnector {
 				result = rs.getString(2);
 			}
 			LOG.fine("Returning: " + result);
+
+			rs.close();
+			stmt.close();
 
 			return result;
 		}

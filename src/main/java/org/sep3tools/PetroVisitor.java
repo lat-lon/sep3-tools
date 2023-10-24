@@ -47,12 +47,22 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	}
 
 	/**
-	 * process single soil takes quantifier into account, if present
+	 * Visit a parse tree produced by the {@code bestandteil_klammer} labeled alternative
+	 * in {@link PetroGrammarParser}.
 	 * @param ctx the parse tree
-	 * @return translated string for soil parse tree
+	 * @return the visitor result
 	 */
-	@Override
-	public String visitBestandteil(PetroGrammarParser.BestandteilContext ctx) {
+	public String visitBestandteil_klammer(PetroGrammarParser.Bestandteil_klammerContext ctx) {
+		return visitBestandteil_simple((PetroGrammarParser.Bestandteil_simpleContext) ctx.bestandteil());
+	}
+
+	/**
+	 * Visit a parse tree produced by the {@code bestandteil_simple} labeled alternative
+	 * in {@link PetroGrammarParser}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	public String visitBestandteil_simple(PetroGrammarParser.Bestandteil_simpleContext ctx) {
 		String boden = getBodenTerm(ctx.TEIL().getText());
 		String attrib;
 		if (isNull(ctx.attribute())) {
@@ -70,20 +80,38 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 				attrib = " (" + attr + ")";
 			}
 		}
-		// if (ctx.getText().startsWith("("))
-		// return "(" + boden + attrib + ")";
 		return boden + attrib;
 	}
 
+	/**
+	 * Visit a parse tree produced by the {@code bestandteil_sicher} labeled alternative
+	 * in {@link PetroGrammarParser}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	public String visitBestandteil_sicher(PetroGrammarParser.Bestandteil_sicherContext ctx) {
+		return visitChildren(ctx) + " sicher";
+	}
+
+	/**
+	 * Visit a parse tree produced by the {@code bestandteil_fraglich} labeled alternative
+	 * in {@link PetroGrammarParser}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	public String visitBestandteil_fraglich(PetroGrammarParser.Bestandteil_fraglichContext ctx) {
+		return visitChildren(ctx) + " fraglich";
+	}
+
 	private String getBodenTerm(String boden) {
-		String bodenTerm = getS3ResultSet(boden);
-		if (!bodenTerm.isEmpty())
-			return bodenTerm;
+		StringBuilder bodenTerm = new StringBuilder(getS3ResultSet(boden));
+		if (bodenTerm.length() > 0)
+			return bodenTerm.toString();
 		for (int i = 0; i <= MAX_QUANTIFIER; i++) {
 			if (boden.endsWith(String.valueOf(i))) {
 				String bodenShort = boden.substring(0, boden.length() - 1);
-				bodenTerm = getS3ResultSet(bodenShort);
-				if (!bodenTerm.isEmpty()) {
+				bodenTerm = new StringBuilder(getS3ResultSet(bodenShort));
+				if (bodenTerm.length() > 0) {
 					String bodenQuant = String.valueOf(i);
 					try {
 						bodenQuant = getBodenQuant(bodenShort, String.valueOf(i));
@@ -96,6 +124,28 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 					return bodenTerm + bodenQuant;
 				}
 			}
+		}
+		String forColorSeparation = boden;
+		int partialBodenLength = 2;
+		while (partialBodenLength <= forColorSeparation.length()) {
+			String partialTermForColor = forColorSeparation.substring(forColorSeparation.length() - partialBodenLength);
+			String colorPart = getS3ResultSet(partialTermForColor);
+			if (!colorPart.isEmpty()) {
+				bodenTerm.insert(0, colorPart);
+				if (partialTermForColor.equals(forColorSeparation)) {
+					return bodenTerm.toString();
+				}
+				forColorSeparation = forColorSeparation.substring(0, forColorSeparation.length() - partialBodenLength);
+				partialBodenLength = 1;
+				if (!forColorSeparation.endsWith("dd")
+						&& (forColorSeparation.endsWith("h") || forColorSeparation.endsWith("d"))) {
+					partialBodenLength = 0;
+				}
+			}
+			partialBodenLength++;
+		}
+		if (bodenTerm.length() > 0) {
+			return bodenTerm.toString();
 		}
 		switch (boden) {
 			case "^u":
@@ -170,15 +220,21 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	 */
 	@Override
 	public String visitUebergang_bes(PetroGrammarParser.Uebergang_besContext ctx) {
-		String teile;
+		String teile = "";
 		String attrib;
 		if (ctx.getText().trim().startsWith("(")) {
 			teile = "(" + visit(ctx.uebergang_bes()) + ")";
 		}
 		else {
-			teile = visit(ctx.b1) + " bis " + visit(ctx.b2);
+			for (PetroGrammarParser.BestandteilContext teil : ctx.bestandteil()) {
+				if (teile.isEmpty()) {
+					teile = visit(teil);
+				}
+				else {
+					teile = teile + " bis " + visit(teil);
+				}
+			}
 		}
-
 		if (isNull(ctx.attribute())) {
 			attrib = "";
 		}
@@ -271,6 +327,22 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		if (att2.startsWith(" ("))
 			att2 = att2.substring(2, att2.length() - 1);
 		return " (" + att1 + ", " + att2 + ")";
+	}
+
+	/**
+	 * process enumeration (aufzaehlung) of attributes
+	 * @param ctx the parse tree
+	 * @return translated string for attribute enumeration parse tree
+	 */
+	@Override
+	public String visitAufzaehlung_a_klammer(PetroGrammarParser.Aufzaehlung_a_klammerContext ctx) {
+		String att1 = visit(ctx.attribute(0));
+		String att2 = visit(ctx.attribute(1));
+		if (att1.startsWith(" ("))
+			att1 = att1.substring(2, att1.length() - 1);
+		if (att2.startsWith(" ("))
+			att2 = att2.substring(2, att2.length() - 1);
+		return " (" + att1 + ") (" + att2 + ")";
 	}
 
 	/**
