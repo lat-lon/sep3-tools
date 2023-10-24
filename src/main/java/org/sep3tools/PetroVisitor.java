@@ -161,7 +161,8 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	private String getBodenTerm(String boden) {
 		String bodenTerm = getS3ResultSet(boden);
 		if (bodenTerm.length() > 0)
-			return bodenTerm.toString();
+			return bodenTerm;
+
 		String bodenQuant = getQuantifiedTerm(boden);
 		if (bodenQuant != null)
 			return bodenQuant;
