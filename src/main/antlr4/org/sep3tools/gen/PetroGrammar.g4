@@ -3,9 +3,9 @@ grammar PetroGrammar;
 schichtbeschreibung: bestandteile;
 
 bestandteile:
-    bestandteil                                                     # Teil
-    | bestandteile ',' bestandteile                                 # Aufzaehlung_b
+    bestandteile ',' bestandteile                                   # Aufzaehlung_b
     | '(' bestandteile ',' bestandteile ')' ( '(' attribute ')' )?  # Aufzaehlung_b_k
+    | bestandteil                                                   # Teil
     | uebergang_bes                                                 # Uebergang_b
 ;
 
@@ -15,10 +15,11 @@ uebergang_bes:
 ;
 
 bestandteil:
-    TEIL ( '(' attribute ')' )? # bestandteil_simple
-    | '(' bestandteil ')'       # bestandteil_klammer
-    | bestandteil FRAGLICH      # bestandteil_fraglich
-    | bestandteil SICHER        # bestandteil_sicher
+    TEIL ( '(' attribute ')' )?                     # bestandteil_simple
+    | '(' bestandteil ')' ( '(' attribute ')' )?    # bestandteil_klammer
+    | bestandteil FRAGLICH                          # bestandteil_fraglich
+    | bestandteil SICHER                            # bestandteil_sicher
+    | DATENFELDKUERZEL TEIL                         # bestandteil_fremddatenfeld
 ;
 
 attribute:
@@ -32,10 +33,11 @@ attribute:
 uebergang_att: attribut '-' attribut;
 
 attribut:
-    TEIL                # attr
-    | attribut FRAGLICH # attr_fraglich
-    | attribut SICHER   # attr_sicher
-    | TIEFE             # attr_tiefe
+    TEIL                        # attr
+    | attribut FRAGLICH         # attr_fraglich
+    | attribut SICHER           # attr_sicher
+    | TIEFE                     # attr_tiefe
+    | DATENFELDKUERZEL TEIL     # attr_fremddatenfeld
 ;
 
 TIEFE: ([0-9]|'.')+;
@@ -44,3 +46,4 @@ UNBEKANNT: ANY+;
 ANY: [a-z]|[A-Z]|[0-9]|'^'|'*'|'+'|'"'|'%';
 FRAGLICH: '?';
 SICHER: '!';
+DATENFELDKUERZEL: ('S'|'P'|'G'|'F'|'Z')':';

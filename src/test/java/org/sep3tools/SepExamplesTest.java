@@ -34,7 +34,6 @@ public class SepExamplesTest {
 	@Test
 	public void verifyPetroExamples() {
 		verifySepExamples("PETRO", "src/main/resources/petrotest.properties");
-
 	}
 
 	@Test
@@ -72,11 +71,14 @@ public class SepExamplesTest {
 		verifySepExamples("FARBE", "src/main/resources/farbetest.properties");
 	}
 
-	public void verifySepExamples(String df, String propFile) {
+	@Test
+	public void verifyFremdDatenfeldExamples() {
+		verifySepExamples("PETRO", "src/main/resources/fremddatenfeldtest.properties");
+	}
 
+	public void verifySepExamples(String df, String propFile) {
 		JavaConnector.setPropertiesFile(DBPROPFILENAME);
 		JavaConnector.setDf(df);
-
 		try {
 			File file = new File(propFile);
 			FileInputStream fileInput = new FileInputStream(file);
@@ -98,7 +100,6 @@ public class SepExamplesTest {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 }
