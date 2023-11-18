@@ -66,12 +66,13 @@ sep3=# select "Typ", "Langtext" as "Typbezeichnung", "Kuerzel", "Klartext" from 
 
 ### Building
 
-To build SEP3-Tools you need to install a [JDK 11](https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot) and [Apache Maven 3.8.x](https://maven.apache.org/).
+To build SEP3-Tools you need to install a [JDK 11](https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot) and [Apache Maven 3.9.x](https://maven.apache.org/).
 Then run the following command to build the parser:
 
 ```shell
 mvn clean install
 ```
+_**NOTE:**_ Downloading dependencies from GitHub Repositories require a `GITHUB_TOKEN` set in your local Maven `settings.xml` file, see [Working with the Apache Maven registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-apache-maven-registry) for more information.
 
 To execute the parser you have to download ANTLR and all other dependencies first with:
 
@@ -89,7 +90,7 @@ for example:
 ```shell
 $> java -jar ./target/sep3-parser-0.0.1-SNAPSHOT.jar "^u(t,lw)"
 2021-09-14 12:00:00 WARN  org.sep3tools.PetroVisitor:20 - Dictionary is not available, fallback to internal dictionary if possible.
-Schluff (tonig, lagenweise)
+Schluffstein (tonig, lagenweise)
 ```
 or using the Woerterbuch data with the options `sep3-parser [jdbc-url] [username] [password] [dictionary] [keytypes] <soil_codes>`:
 
