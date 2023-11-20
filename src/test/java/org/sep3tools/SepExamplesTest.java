@@ -20,7 +20,10 @@ import org.hamcrest.CoreMatchers;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
+import java.io.BufferedReader;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -79,27 +82,43 @@ public class SepExamplesTest {
 	public void verifySepExamples(String df, String propFile) {
 		JavaConnector.setPropertiesFile(DBPROPFILENAME);
 		JavaConnector.setDf(df);
-		try {
-			File file = new File(propFile);
-			FileInputStream fileInput = new FileInputStream(file);
-			Properties properties = new Properties();
-			properties.load(fileInput);
-			fileInput.close();
+		Properties properties = loadPropertiesFromFile(propFile, "=");
 
-			Enumeration enuKeys = properties.keys();
-			while (enuKeys.hasMoreElements()) {
-				String sep3String = (String) enuKeys.nextElement();
-				String expectedTranslation = properties.getProperty(sep3String);
-				String translation = Launch.S3_AsText(sep3String);
-				assertThat(translation, CoreMatchers.is(expectedTranslation));
-			}
+		Enumeration enuKeys = properties.keys();
+		while (enuKeys.hasMoreElements()) {
+			String sep3String = (String) enuKeys.nextElement();
+			String expectedTranslation = properties.getProperty(sep3String);
+			String translation = Launch.convertS3ToText(sep3String);
+			assertThat(translation, CoreMatchers.is(expectedTranslation));
 		}
-		catch (FileNotFoundException e) {
-			e.printStackTrace();
+	}
+
+	private static Properties loadPropertiesFromFile(String filePath, String delimiter) {
+		Properties properties = new Properties();
+
+		try (InputStream input = new FileInputStream(filePath);
+				BufferedReader reader = new BufferedReader(new InputStreamReader(input))) {
+
+			String line;
+			while ((line = reader.readLine()) != null) {
+				// Split the line using the custom delimiter
+				String[] keyValue = line.split(delimiter, 2);
+
+				// Check if the line has a valid key-value pair
+				if (keyValue.length == 2) {
+					String key = keyValue[0].trim();
+					String value = keyValue[1].trim();
+
+					// Add the key-value pair to the properties
+					properties.setProperty(key, value);
+				}
+			}
 		}
 		catch (IOException e) {
 			e.printStackTrace();
 		}
+
+		return properties;
 	}
 
 }
