@@ -258,8 +258,7 @@ public final class JavaConnector {
 	}
 
 	/**
-	 * Retrieves allowed attributes for a given SEP3 code
-	 * @return String containing information about allowed attributes, quantifiers, etc.
+	 * sets db properties for table and column names from database table
 	 * @throws SQLException if DB error occurs
 	 */
 	public static void setPropertiesFromDB() throws SQLException {
