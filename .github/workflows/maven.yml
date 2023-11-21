@@ -30,7 +30,7 @@ jobs:
         name: sep3-parser
         path: target/sep3-parser-*-jar-with-dependencies.jar
   deploy:
-    if: github.ref.name == 'main'
+    if: success() && github.ref_name == 'main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
