@@ -28,6 +28,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
       - name: Prepare and release
-        run: mvn -Dresume=false -DreleaseVersion=${github.event.inputs.release_version} -DdevelopmentVersion=${github.event.inputs.next_version} -DdeployAtEnd=true -Dgoals=deploy release:prepare release:perform
+        run: mvn -Dresume=false -DreleaseVersion=${{ github.event.inputs.release_version }} -DdevelopmentVersion=${{ github.event.inputs.next_version }} -DdeployAtEnd=true -Dgoals=deploy release:prepare release:perform
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
