@@ -2,7 +2,7 @@ package org.sep3tools;
 
 import org.sep3tools.gen.*;
 
-import java.sql.*;
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
 import static java.util.Objects.isNull;

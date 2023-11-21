@@ -5,9 +5,8 @@ import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.postgresql.pljava.annotation.Function;
-import org.sep3tools.gen.*;
-
-import java.sql.SQLException;
+import org.sep3tools.gen.PetroGrammarLexer;
+import org.sep3tools.gen.PetroGrammarParser;
 
 /**
  * Command line launcher for SEP3 tools
@@ -53,7 +52,7 @@ public class Launch {
 					+ "\"G(fg-gg,ms-gs,mats,mata,grs(tw)),fX-mX(mata),mS(fs,grs,fg-mg2,mx(voe))\"");
 			return;
 		}
-		String visit = S3_AsText(sep3String);
+		String visit = convertS3ToText(sep3String);
 		System.out.println(visit);
 	}
 
@@ -62,7 +61,7 @@ public class Launch {
 	 * @param s3String coded SEP3 string parsing
 	 * @return human readable format of SEP3 input
 	 */
-	protected static String S3_AsText(String s3String) {
+	protected static String convertS3ToText(String s3String) {
 		CharStream input = CharStreams.fromString(s3String);
 		PetroGrammarLexer lexer = new PetroGrammarLexer(input);
 		CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -87,7 +86,44 @@ public class Launch {
 			JavaConnector.setWb(wb);
 			JavaConnector.setSt(st);
 			JavaConnector.setDf(df);
-			return S3_AsText(s3String);
+			return convertS3ToText(s3String);
+		}
+		catch (Exception e) {
+			return "";
+		}
+	}
+
+	/**
+	 * translates a coded SEP3 String to a human readable format. needed for in database
+	 * use. Returns empty String, if exception is catched.
+	 * @param s3String coded SEP3 string parsing
+	 * @param df Datenfeld
+	 * @return human readable format of SEP3 input
+	 */
+	@Function
+	public static String S3_AsText(String s3String, String df) {
+		try {
+			JavaConnector.setPropertiesFromDB();
+			JavaConnector.setDf(df);
+			return convertS3ToText(s3String);
+		}
+		catch (Exception e) {
+			return "";
+		}
+	}
+
+	/**
+	 * translates a coded SEP3 String to a human readable format. Needed for in database
+	 * use. Returns empty String, if exception is catched. Uses configured standard
+	 * datefiled
+	 * @param s3String coded SEP3 string parsing
+	 * @return human readable format of SEP3 input
+	 */
+	@Function
+	public static String S3_AsText(String s3String) {
+		try {
+			JavaConnector.setPropertiesFromDB();
+			return convertS3ToText(s3String);
 		}
 		catch (Exception e) {
 			return "";

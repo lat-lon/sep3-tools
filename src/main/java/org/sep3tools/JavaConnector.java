@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.ResultSet;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -29,7 +33,19 @@ public final class JavaConnector {
 
 	private static String wb;
 
+	private static String wbKuerzel;
+
+	private static String wbKlartext;
+
+	private static String wbTyp;
+
+	private static String wbAttribute;
+
 	private static String st;
+
+	private static String stDatenfeld;
+
+	private static String stNebentypbez;
 
 	private static String sm;
 
@@ -53,7 +69,13 @@ public final class JavaConnector {
 			setUser(properties.getProperty("USER"));
 			setPass(properties.getProperty("PASSWORD"));
 			setWb(properties.getProperty("WOERTERBUCH"));
+			setWbAttribute(properties.getProperty("WBATTRIBUTE"));
+			setWbKlartext(properties.getProperty("WBKLARTEXT"));
+			setWbKuerzel(properties.getProperty("WBKUERZEL"));
+			setWbTyp(properties.getProperty("WBTYP"));
 			setSt(properties.getProperty("SCHLUESSELTYPEN"));
+			setStDatenfeld(properties.getProperty("STDATENFELD"));
+			setStNebentypbez(properties.getProperty("STNEBENTYPBEZ"));
 			setSm(properties.getProperty("SCHLUESSELMAPPING"));
 			setDf(properties.getProperty("DATEFIELD"));
 		}
@@ -63,14 +85,6 @@ public final class JavaConnector {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public static void setWb(String wb) {
-		JavaConnector.wb = wb;
-	}
-
-	public static void setSt(String st) {
-		JavaConnector.st = st;
 	}
 
 	public static void setSm(String sm) {
@@ -96,12 +110,44 @@ public final class JavaConnector {
 		JavaConnector.m_url = newUrl;
 	}
 
+	public static void setWb(String wb) {
+		JavaConnector.wb = wb;
+	}
+
+	public static void setWbKuerzel(String wbKuerzel) {
+		JavaConnector.wbKuerzel = wbKuerzel;
+	}
+
+	public static void setWbKlartext(String wbKlartext) {
+		JavaConnector.wbKlartext = wbKlartext;
+	}
+
+	public static void setWbTyp(String wbTyp) {
+		JavaConnector.wbTyp = wbTyp;
+	}
+
+	public static void setWbAttribute(String wbAttribute) {
+		JavaConnector.wbAttribute = wbAttribute;
+	}
+
+	public static void setSt(String st) {
+		JavaConnector.st = st;
+	}
+
+	public static void setStDatenfeld(String stDatenfeld) {
+		JavaConnector.stDatenfeld = stDatenfeld;
+	}
+
+	public static void setStNebentypbez(String stNebentypbez) {
+		JavaConnector.stNebentypbez = stNebentypbez;
+	}
+
 	// String query = "SELECT Klartext from woerterbuch.Woerterbuch where Kuerzel=";
 
-	private static void setConn(String url, String user, String pass) throws SQLException {
+	private static void setConn() throws SQLException {
 		if (conn != null && !conn.isClosed())
 			conn.close();
-		JavaConnector.conn = DriverManager.getConnection(url, user, pass);
+		JavaConnector.conn = DriverManager.getConnection(m_url, user, pass);
 		credChanged = false;
 	}
 
@@ -115,7 +161,7 @@ public final class JavaConnector {
 		String query = getQueryString(wb, st, df);
 
 		if (credChanged)
-			setConn(m_url, user, pass);
+			setConn();
 		PreparedStatement stmt = conn.prepareStatement(query);
 		stmt.setString(1, sep3Code);
 		LOG.fine("Executing statement: " + stmt);
@@ -135,9 +181,9 @@ public final class JavaConnector {
 	}
 
 	private static String getQueryString(String woerterbuch, String schluesselypen, String datenfeld) {
-		return "select kuerzel, klartext from " + woerterbuch + " w join " + schluesselypen + " s "
-				+ "on w.typ = s.nebentypbez where (s.datenfeld = '" + datenfeld + "' "
-				+ "OR s.datenfeld = 'diverse') AND kuerzel= ?";
+		return "select " + wbKuerzel + ", " + wbKlartext + " from " + woerterbuch + " w join " + schluesselypen + " s "
+				+ "on w." + wbTyp + " = s." + stNebentypbez + " where (s." + stDatenfeld + " = '" + datenfeld + "' "
+				+ "OR s." + stDatenfeld + " = 'diverse') AND " + wbKuerzel + " = ?";
 	}
 
 	public static String getS3inDfName(String datefield, String sep3Code) throws SQLException {
@@ -163,7 +209,7 @@ public final class JavaConnector {
 		}
 
 		if (credChanged)
-			setConn(m_url, user, pass);
+			setConn();
 		PreparedStatement stmt = conn.prepareStatement(query);
 		stmt.setString(1, sep3Code);
 		LOG.fine("Executing statement: " + stmt);
@@ -192,7 +238,7 @@ public final class JavaConnector {
 		String query = "select bml_code from " + sm + " where sep3_codelist = 'S3PETRO' AND sep3_code = ?";
 
 		if (credChanged)
-			setConn(m_url, user, pass);
+			setConn();
 		PreparedStatement stmt = conn.prepareStatement(query);
 		stmt.setString(1, sep3Code);
 		LOG.fine("Executing statement: " + stmt);
@@ -212,19 +258,56 @@ public final class JavaConnector {
 	}
 
 	/**
+	 * sets db properties for table and column names from database table
+	 * @throws SQLException if DB error occurs
+	 */
+	public static void setPropertiesFromDB() throws SQLException {
+		String dbpart = "part";
+		String dbvalue = "value";
+		String mdtable = "public.sep3tools";
+		Properties properties = new Properties();
+
+		String query = "select " + dbpart + ", " + dbvalue + " from " + mdtable;
+		if (credChanged)
+			setConn();
+		PreparedStatement stmt = conn.prepareStatement(query);
+		try (ResultSet rs = stmt.executeQuery()) {
+			while (rs.next()) {
+				properties.setProperty(rs.getString(1), rs.getString(2));
+			}
+			setWb(properties.getProperty("WOERTERBUCH"));
+			setWbAttribute(properties.getProperty("WBATTRIBUTE"));
+			setWbKlartext(properties.getProperty("WBKLARTEXT"));
+			setWbKuerzel(properties.getProperty("WBKUERZEL"));
+			setWbTyp(properties.getProperty("WBTYP"));
+			setSt(properties.getProperty("SCHLUESSELTYPEN"));
+			setStDatenfeld(properties.getProperty("STDATENFELD"));
+			setStNebentypbez(properties.getProperty("STNEBENTYPBEZ"));
+			setSm(properties.getProperty("SCHLUESSELMAPPING"));
+			setDf(properties.getProperty("DATEFIELD"));
+			// System.out.println (properties.toString());
+
+			rs.close();
+			stmt.close();
+		}
+	}
+
+	/**
 	 * Retrieves allowed attributes for a given SEP3 code
 	 * @param sep3Code for which attributes are requested
 	 * @return String containing information about allowed attributes, quantifiers, etc.
 	 * @throws SQLException if DB error occurs
 	 */
 	public static String getAllowedAttribs(String sep3Code) throws SQLException {
-		String query = "select kuerzel, attribute from " + wb + " w join " + st + " s " + "on w.typ = s.nebentypbez "
-				+ "where (s.datenfeld = 'PETRO' OR s.datenfeld = 'diverse') AND kuerzel= ?";
+		String query = "select " + wbKuerzel + ", " + wbAttribute + " from " + wb + " w join " + st + " s " + "on w."
+				+ wbTyp + " = s." + stNebentypbez + " where (s." + stDatenfeld + " = 'PETRO' OR s." + stDatenfeld
+				+ " = 'diverse') AND " + wbKuerzel + " = ?";
 		if (credChanged)
-			setConn(m_url, user, pass);
+			setConn();
 		PreparedStatement stmt = conn.prepareStatement(query);
 		stmt.setString(1, sep3Code);
 		LOG.fine("Executing statement: " + stmt);
+
 		try (ResultSet rs = stmt.executeQuery()) {
 			boolean validRS = rs.next();
 			String result = "";
@@ -254,10 +337,11 @@ public final class JavaConnector {
 		allowedAttributes = getAllowedAttribs(sep3Code);
 		quantBez = getQuantBezFromAttribs(allowedAttributes);
 
-		String query = "select w.kuerzel, w.klartext, s.nebentypbez from " + wb + " w join " + st + " s "
-				+ "on w.typ = s.nebentypbez where (s.nebentypbez = ? AND w.kuerzel = ?);";
+		String query = "select w." + wbKuerzel + ", w." + wbKlartext + ", s." + stNebentypbez + " from " + wb
+				+ " w join " + st + " s " + "on w." + wbTyp + " = s." + stNebentypbez + " where (s. " + stNebentypbez
+				+ " = ? AND w." + wbKuerzel + " = ?);";
 		if (credChanged)
-			setConn(m_url, user, pass);
+			setConn();
 		PreparedStatement stmt = conn.prepareStatement(query);
 		stmt.setString(1, quantBez);
 		stmt.setString(2, quant);
