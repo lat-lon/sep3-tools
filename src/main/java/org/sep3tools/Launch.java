@@ -114,7 +114,8 @@ public class Launch {
 
 	/**
 	 * translates a coded SEP3 String to a human readable format. Needed for in database
-	 * use. Returns empty String, if exception is catched. Uses configured standard datefiled
+	 * use. Returns empty String, if exception is catched. Uses configured standard
+	 * datefiled
 	 * @param s3String coded SEP3 string parsing
 	 * @return human readable format of SEP3 input
 	 */
