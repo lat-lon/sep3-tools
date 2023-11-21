@@ -56,12 +56,12 @@
 
     <distributionManagement>
         <repository>
-            <id>latlon-deploy</id>
-            <url>https://repo.lat-lon.de/repository/sep3tools-releases/</url>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/lat-lon/sep3-tools</url>
         </repository>
         <snapshotRepository>
-            <id>latlon-deploy</id>
-            <url>https://repo.lat-lon.de/repository/sep3tools-snapshots/</url>
+            <id>github</id>
+            <url>https://maven.pkg.github.com/lat-lon/sep3-tools</url>
         </snapshotRepository>
     </distributionManagement>
 
