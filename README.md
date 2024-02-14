@@ -152,6 +152,8 @@ Create the configuration table `sep3tools` which maps the _"Schluesseltypen"_ an
 
 You also need to specify connection parameters for your database setup in the properties file you want to use.
 
+In some cases you need to specify the full path to the properties file in 00_dbinfo.sql . It may be best to copy both the properties file and 00_dbinfo.sql to /tmp/ and use them from there:
+
 ```postgres-sql
 sep3=# \i /tmp/00_dbinfo.sql
 ```
