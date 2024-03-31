@@ -11,7 +11,7 @@ bestandteile:
 
 uebergang_bes:
     bestandteil  ('-' bestandteil)+
-    | '(' uebergang_bes ')' ( '(' attribute ')' )?
+    | '(' uebergang_bes ')' ( '(' attribute ')' )+
 ;
 
 bestandteil:
@@ -26,7 +26,7 @@ attribute:
     attribut                                    # att
     | uebergang_att                             # Uebergang_a
     | attr=attribute '(' unter=attribute ')'    # unter_Attribute
-    | attribute ',' attribute                   # Aufzaehlung_a
+    | attribute (',' attribute)+                   # Aufzaehlung_a
     | '(' attribute ')' '(' attribute ')'       # Aufzaehlung_a_klammer
 ;
 
