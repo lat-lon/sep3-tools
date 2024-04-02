@@ -54,7 +54,16 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	 */
 	@Override
 	public String visitSchichtbeschreibung(PetroGrammarParser.SchichtbeschreibungContext ctx) {
-		return visitChildren(ctx);
+		String teile = "";
+		for (PetroGrammarParser.BestandteileContext teil : ctx.bestandteile()) {
+			if (teile.isEmpty()) {
+				teile = visit(teil);
+			}
+			else {
+				teile = teile + ", " + visit(teil);
+			}
+		}
+		return visitChildren(ctx).trim();
 	}
 
 	/**
@@ -137,6 +146,11 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		if (colorTerm != null)
 			return colorTerm;
 		return dfKuerzel + teil;
+	}
+
+	@Override
+	public String visitKlammer(PetroGrammarParser.KlammerContext ctx) {
+		return "(" + visitChildren(ctx) + ") ";
 	}
 
 	/**
@@ -234,6 +248,11 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 		int partialBodenLength = 2;
 		while (partialBodenLength <= forColorSeparation.length()) {
 			String partialTermForColor = forColorSeparation.substring(forColorSeparation.length() - partialBodenLength);
+			if (partialTermForColor.endsWith("=")) {
+				bodenTerm = "lich" + bodenTerm;
+				forColorSeparation = forColorSeparation.substring(0, forColorSeparation.length() - 1);
+				partialBodenLength--;
+			}
 			String colorPart = getS3InDfResultSet("F:", partialTermForColor);
 			if (!colorPart.isEmpty()) {
 				bodenTerm = colorPart + bodenTerm;
@@ -345,7 +364,7 @@ public class PetroVisitor extends PetroGrammarBaseVisitor<String> {
 	 */
 	@Override
 	public String visitAufzaehlung_b(PetroGrammarParser.Aufzaehlung_bContext ctx) {
-		return visit(ctx.bestandteile(0)) + ", " + visit(ctx.bestandteile(1));
+		return visit(ctx.bestandteile(0)).trim() + ", " + visit(ctx.bestandteile(1)).trim();
 	}
 
 	/**
