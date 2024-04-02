@@ -140,9 +140,9 @@ public class BmlVisitor extends PetroGrammarBaseVisitor<String> {
 	@Override
 	public String visitUebergang_bes(PetroGrammarParser.Uebergang_besContext ctx) {
 		String teile = "";
-		String attrib;
+		String attrib = "";
 
-		if (ctx.getText().startsWith(" (")) {
+		if (ctx.getText().trim().startsWith("(")) {
 			teile = visit(ctx.uebergang_bes());
 		}
 		else {
@@ -155,20 +155,9 @@ public class BmlVisitor extends PetroGrammarBaseVisitor<String> {
 				}
 			}
 		}
-		if (isNull(ctx.attribute())) {
-			attrib = "";
-		}
-		else {
-			String attr = visit(ctx.attribute());
-			if (isNull(attr)) {
-				attrib = "";
-			}
-			else if (attr.startsWith(" (")) {
-				attrib = attr.substring(2, attr.length() - 1);
-			}
-			else {
-				attrib = attr;
-			}
+
+		for (PetroGrammarParser.AttributeContext teil : ctx.attribute()) {
+			attrib = attrib + ", " + visit(teil);
 		}
 		return teile + attrib;
 	}
