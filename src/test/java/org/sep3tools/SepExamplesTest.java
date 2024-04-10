@@ -82,7 +82,7 @@ public class SepExamplesTest {
 	public void verifySepExamples(String df, String propFile) {
 		JavaConnector.setPropertiesFile(DBPROPFILENAME);
 		JavaConnector.setDf(df);
-		Properties properties = loadPropertiesFromFile(propFile, "=");
+		Properties properties = loadPropertiesFromFile(propFile, " = ");
 
 		Enumeration enuKeys = properties.keys();
 		while (enuKeys.hasMoreElements()) {
