@@ -1,6 +1,72 @@
 # sep3-tools
 Tools for processing SEP 3 geological data.
 
+## Usage
+
+SEP3-Tools currently supports the following data field values:	
+
+* BESCHBG - Beschreibung Bohrgut
+* BESCHBV - Beschreibung Bohrvorgangsbeschreibung
+* BGRUPPE - Bodengruppe
+* FARBE
+* GENESE
+* KALKGEH - Kalkgehalt
+* PETRO - Petrographie
+* ZUSATZ
+
+These can be used in the following functions as *data_field* parameter values:
+
+* text s3_asbmllitho (text *input_value*, text schluesselmapping_table)
+* text s3_astext (text *input_value*)
+* text s3_astext (text *input_value*, text *data_field*)
+* text s3_astext (text *input_value*, text *woerterbuch_table*, text *schluesseltypen_table*, text *data_field*)
+* text s3_astext_verbose (text *input_value*, text *woerterbuch_table*, text *schluesseltypen_table*, text *data_field*)
+
+Some example function calls along with the results:
+
+```
+sep3=# SELECT s3_asbmllitho('^hzk, fS(ms2, "gl"2)', 'bml.bml_schluesselmapping');
+ s3_asbmllitho 
+---------------
+ fS,mS
+
+
+sep3=# SELECT s3_astext('^s(kgm-kgg,hf,F:hgn=gr');
+                            s3_astext                             
+------------------------------------------------------------------
+ Sandsteinmittelkörnig bis grobkörnig, hartfest, hellgrünlichgrau
+  
+
+sep3=# SELECT s3_astext('(gG-mG-fG)(gs-fs)', 'PETRO');
+                                               s3_astext                                                
+--------------------------------------------------------------------------------------------------------
+ (Grobkies [20-63 mm] bis Mittelkies [6,3-20 mm] bis Feinkies [2,0-6,3 mm]) (grobsandig bis feinsandig)
+
+
+sep3=# SELECT s3_astext('((robn,rovi,bnvi,gngr,hbngr)(wl))(ob),rovi,robn,rovibn,bnro,(gn,hge,ro,gngr,holgr)(lag)', 'FARBE');
+                                                                                            s3_astext                                                                                            
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ ((rotbraun, rotviolett, braunviolett, grüngrau, hellbraungrau) (wechsellagernd)) (oben), rotviolett, rotbraun, rotviolettbraun, braunrot, (grün, hellgelb, rot, grüngrau, hellolivgrau) (Lagen)
+
+
+sep3=# SELECT s3_astext('(P:t4)(Mg,lw),gf,g', 'woerterbuch."Woerterbuch"', 'woerterbuch."Schluesseltypen"', 'GENESE');
+                              s3_astext                               
+----------------------------------------------------------------------
+ (stark tonig) (Geschiebemergel, lagenweise), glazifluviatil, glaziär
+
+
+sep3=# SELECT s3_astext('kf,k(lse,F:we)', 'woerterbuch."Woerterbuch"', 'woerterbuch."Schluesseltypen"', 'KALKGEH');
+                s3_astext                
+-----------------------------------------
+ kalkfrei, kalkhaltig (als Linse, weiss)
+
+
+sep3=# SELECT s3_astext_verbose('^s(kgm-kgg,hf,F:hgn=gr', 'woerterbuch."Woerterbuch"', 'woerterbuch."Schluesseltypen"', 'PETRO');
+                        s3_astext_verbose                         
+------------------------------------------------------------------
+ Sandsteinmittelkörnig bis grobkörnig, hartfest, hellgrünlichgrau
+```
+
 ## Components
 The SEP3-Tools are based on [ANTLR](https://www.antlr.org/) and are providing a tool to parse coded strings such as `^u(t,lw)`. The grammar of these codes is defined in file [PetroGrammar](https://github.com/lat-lon/sep3-tools/blob/main/src/main/antlr4/org/sep3tools/gen/PetroGrammar.g4) and translated into a parser using the [Java](https://www.java.com) programming language. 
 
@@ -63,17 +129,6 @@ sep3=# select "Typ", "Langtext" as "Typbezeichnung", "Kuerzel", "Klartext" from 
  Spetro_Oz    | Zersetzungsgrad nach SCHNEEKLOTH (1977)               | zgu     | unzersetzt
 (2113 rows)
 ```
-
-sep3tools currently supports the following data field values:
-
-* BESCHBG - Beschreibung Bohrgut
-* BESCHBV - Beschreibung Bohrvorgangsbeschreibung
-* BGRUPPE - Bodengruppe
-* FARBE
-* GENESE
-* KALKGEH - Kalkgehalt
-* PETRO - Petrographie
-* ZUSATZ
 
 ## Installation
 
