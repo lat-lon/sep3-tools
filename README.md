@@ -16,11 +16,11 @@ SEP3-Tools currently supports the following data field values:
 
 These can be used in the following functions as *data_field* parameter values:
 
-* text s3_asbmllitho (text *input_value*, text schluesselmapping_table)
-* text s3_astext (text *input_value*)
-* text s3_astext (text *input_value*, text *data_field*)
-* text s3_astext (text *input_value*, text *woerterbuch_table*, text *schluesseltypen_table*, text *data_field*)
-* text s3_astext_verbose (text *input_value*, text *woerterbuch_table*, text *schluesseltypen_table*, text *data_field*)
+* text **s3_asbmllitho** (text *input_value*, text schluesselmapping_table)
+* text **s3_astext** (text *input_value*)
+* text **s3_astext** (text *input_value*, text *data_field*)
+* text **s3_astext** (text *input_value*, text *woerterbuch_table*, text *schluesseltypen_table*, text *data_field*)
+* text **s3_astext_verbose** (text *input_value*, text *woerterbuch_table*, text *schluesseltypen_table*, text *data_field*)
 
 Some example function calls along with the results:
 
