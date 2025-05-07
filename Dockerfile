@@ -2,7 +2,6 @@
 # under LGPL 2.1 (LICENSE.TXT) Copyright 2023 Torsten Friebe <info@lat-lon.de>
 ARG POSTGRES_VERSION=14
 ARG POSTGIS_VERSION=3.4
-ARG JDK_VERSION=11
 
 FROM postgis/postgis:${POSTGRES_VERSION}-${POSTGIS_VERSION}
 LABEL maintainer="lat/lon GmbH <info@lat-lon.de" \
@@ -11,8 +10,9 @@ LABEL maintainer="lat/lon GmbH <info@lat-lon.de" \
 	"org.opencontainers.image.url"="https://github.com/lat-lon/sep3-tools" \
 	"org.opencontainers.image.vendor"="lat/lon GmbH"
 
-ENV POSTGRES_VERSION=14
-ENV JDK_VERSION=11
+ARG POSTGRES_VERSION=14
+ARG JDK_VERSION=11
+
 ENV WBFILENAME=/tmp/Woerterbuch_Austausch_Internet_accdb.accdb
 
 RUN apt-get update -y && \
