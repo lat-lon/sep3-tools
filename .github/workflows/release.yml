@@ -1,0 +1,58 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Manual trigger release build
+
+on:
+  workflow_dispatch:
+    inputs:
+      releaseVersion:
+        description: "Next release version"
+        required: true
+        default: "X.Y.Z"
+      developmentVersion:
+        description: "Next snapshot version"
+        required: true
+        default: "X.Y.Z-SNAPSHOT"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: maven
+    - name: Build with Maven
+      run: mvn -B verify --file pom.xml
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  release:
+    if: success() && github.ref_name == 'main'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Create Maven Release
+      uses: qcastel/github-actions-maven-release@v1.12.43
+      env:
+        JAVA_HOME: /usr/lib/jvm/java-11-openjdk/
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+        ssh-passphrase: ${{ secrets.SSH_PASSPHRASE }}
+        maven-release-version-number: ${releaseVersion}
+        maven-development-version-number: ${developmentVersion}
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Build and push
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        platforms: linux/amd64,linux/arm64
+        push: true
+        tags: ghcr.io/lat-lon/sep3-tools:${releaseVersion}
