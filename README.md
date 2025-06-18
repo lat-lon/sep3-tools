@@ -148,5 +148,51 @@ petroparser=# \df *s3_*;
  public | s3_astext | character varying | s3string character varying                                             | func
  public | s3_astext | character varying | s3string character varying, wb character varying, st character varying | func
 (2 rows)
+```
 
+## Docker
+
+SEP3-Tools can be used with Docker. Follow the instructions to execute commands on a docker environment:
+
+### Building
+
+To build SEP3-Tools you need to install a [JDK 11](https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot) and [Apache Maven 3.8.x](https://maven.apache.org/).
+Then run the following command to build the parser:
+
+```shell
+mvn clean install
+```
+
+Build the docker image with
+```shell
+docker build -t sep3tools .
+```
+
+### Using
+
+Start the container with
+```shell
+docker run --name sep3tools --rm -e POSTGRES_PASSWORD=postgres sep3tools
+```
+
+Login to the container
+```shell
+docker exec -it sep3tools bash
+```
+
+Execute commands on the container
+
+```shell
+root@9e9294939f62:/docker-entrypoint-initdb.d# psql -h localhost -Upostgres -d sep3tools
+
+sep3tools=# \df *s3_*;
+List of functions
+Schema |       Name        | Result data type  |                                     Argument data types                                      | Type
+--------+-------------------+-------------------+----------------------------------------------------------------------------------------------+------
+public | s3_asbmllitho     | character varying | s3string character varying, sm character varying                                             | func
+public | s3_astext         | character varying | s3string character varying                                                                   | func
+public | s3_astext         | character varying | s3string character varying, df character varying                                             | func
+public | s3_astext         | character varying | s3string character varying, wb character varying, st character varying, df character varying | func
+public | s3_astext_verbose | character varying | s3string character varying, wb character varying, st character varying, df character varying | func
+(5 rows)
 ```
