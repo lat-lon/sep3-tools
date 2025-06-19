@@ -1,17 +1,20 @@
 grammar PetroGrammar;
 
-schichtbeschreibung: bestandteile;
+schichtbeschreibung:
+    (bestandteile)+
+    ;
 
 bestandteile:
-    bestandteile ',' bestandteile                                   # Aufzaehlung_b
+    bestandteile (',' bestandteile)+                                # Aufzaehlung_b
     | '(' bestandteile ',' bestandteile ')' ( '(' attribute ')' )?  # Aufzaehlung_b_k
     | bestandteil                                                   # Teil
     | uebergang_bes                                                 # Uebergang_b
+    | '(' bestandteile ')'                                          # Klammer
 ;
 
 uebergang_bes:
     bestandteil  ('-' bestandteil)+
-    | '(' uebergang_bes ')' ( '(' attribute ')' )?
+    | '(' uebergang_bes ')' ( '(' attribute ')' )+
 ;
 
 bestandteil:
@@ -26,7 +29,7 @@ attribute:
     attribut                                    # att
     | uebergang_att                             # Uebergang_a
     | attr=attribute '(' unter=attribute ')'    # unter_Attribute
-    | attribute ',' attribute                   # Aufzaehlung_a
+    | attribute (',' attribute)+                # Aufzaehlung_a
     | '(' attribute ')' '(' attribute ')'       # Aufzaehlung_a_klammer
 ;
 
@@ -43,7 +46,7 @@ attribut:
 TIEFE: ([0-9]|'.')+;
 TEIL: ANY+;
 UNBEKANNT: ANY+;
-ANY: [a-z]|[A-Z]|[0-9]|'^'|'*'|'+'|'"'|'%';
+ANY: [a-z]|[A-Z]|[0-9]|'^'|'*'|'+'|'"'|'%'|'=';
 FRAGLICH: '?';
 SICHER: '!';
 DATENFELDKUERZEL: ('S'|'P'|'G'|'F'|'Z')':';
