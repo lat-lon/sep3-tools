@@ -1,6 +1,72 @@
 # sep3-tools
 Tools for processing SEP 3 geological data.
 
+## Usage
+
+SEP3-Tools currently supports the following data field values:	
+
+* BESCHBG - Beschreibung Bohrgut
+* BESCHBV - Beschreibung Bohrvorgangsbeschreibung
+* BGRUPPE - Bodengruppe
+* FARBE
+* GENESE
+* KALKGEH - Kalkgehalt
+* PETRO - Petrographie
+* ZUSATZ
+
+These can be used in the following functions as *data_field* parameter values:
+
+* text **s3_asbmllitho** (text *input_value*, text schluesselmapping_table)
+* text **s3_astext** (text *input_value*)
+* text **s3_astext** (text *input_value*, text *data_field*)
+* text **s3_astext** (text *input_value*, text *woerterbuch_table*, text *schluesseltypen_table*, text *data_field*)
+* text **s3_astext_verbose** (text *input_value*, text *woerterbuch_table*, text *schluesseltypen_table*, text *data_field*)
+
+Some example function calls along with the results:
+
+```
+sep3=# SELECT s3_asbmllitho('^hzk, fS(ms2, "gl"2)', 'bml.bml_schluesselmapping');
+ s3_asbmllitho 
+---------------
+ fS,mS
+
+
+sep3=# SELECT s3_astext('^s(kgm-kgg,hf,F:hgn=gr');
+                            s3_astext                             
+------------------------------------------------------------------
+ Sandsteinmittelkörnig bis grobkörnig, hartfest, hellgrünlichgrau
+  
+
+sep3=# SELECT s3_astext('(gG-mG-fG)(gs-fs)', 'PETRO');
+                                               s3_astext                                                
+--------------------------------------------------------------------------------------------------------
+ (Grobkies [20-63 mm] bis Mittelkies [6,3-20 mm] bis Feinkies [2,0-6,3 mm]) (grobsandig bis feinsandig)
+
+
+sep3=# SELECT s3_astext('((robn,rovi,bnvi,gngr,hbngr)(wl))(ob),rovi,robn,rovibn,bnro,(gn,hge,ro,gngr,holgr)(lag)', 'FARBE');
+                                                                                            s3_astext                                                                                            
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+ ((rotbraun, rotviolett, braunviolett, grüngrau, hellbraungrau) (wechsellagernd)) (oben), rotviolett, rotbraun, rotviolettbraun, braunrot, (grün, hellgelb, rot, grüngrau, hellolivgrau) (Lagen)
+
+
+sep3=# SELECT s3_astext('(P:t4)(Mg,lw),gf,g', 'woerterbuch."Woerterbuch"', 'woerterbuch."Schluesseltypen"', 'GENESE');
+                              s3_astext                               
+----------------------------------------------------------------------
+ (stark tonig) (Geschiebemergel, lagenweise), glazifluviatil, glaziär
+
+
+sep3=# SELECT s3_astext('kf,k(lse,F:we)', 'woerterbuch."Woerterbuch"', 'woerterbuch."Schluesseltypen"', 'KALKGEH');
+                s3_astext                
+-----------------------------------------
+ kalkfrei, kalkhaltig (als Linse, weiss)
+
+
+sep3=# SELECT s3_astext_verbose('^s(kgm-kgg,hf,F:hgn=gr', 'woerterbuch."Woerterbuch"', 'woerterbuch."Schluesseltypen"', 'PETRO');
+                        s3_astext_verbose                         
+------------------------------------------------------------------
+ Sandsteinmittelkörnig bis grobkörnig, hartfest, hellgrünlichgrau
+```
+
 ## Components
 The SEP3-Tools are based on [ANTLR](https://www.antlr.org/) and are providing a tool to parse coded strings such as `^u(t,lw)`. The grammar of these codes is defined in file [PetroGrammar](https://github.com/lat-lon/sep3-tools/blob/main/src/main/antlr4/org/sep3tools/gen/PetroGrammar.g4) and translated into a parser using the [Java](https://www.java.com) programming language. 
 
@@ -19,7 +85,7 @@ Install a [PostgreSQL](https://www.postgresql.org/) database 12+.
 
 Download the dictionary ("Woerterbuch") data from [www.lbeg.niedersachsen.de](https://www.lbeg.niedersachsen.de/karten_daten_publikationen/bohrdatenbank/sep_3/softwaredownloads/software-downloads-875.html) as follows:
 
-- "Schlüssellisten mit Kürzeln und zugehörigem Klartext und Typisierungen" - "Wörterbuch" - "November 2022"
+- "Schlüssellisten mit Kürzeln und zugehörigem Klartext und Typisierungen" - "Wörterbuch" - "August 2023"
 
 It's a ZIP file which contains the `accdb` and `mdb` files.
 
@@ -31,6 +97,8 @@ $ mdb-export Woerterbuch_Austausch_Internet_accdb.accdb Schluesseltypen > Schlue
 $ mdb-schema -T Woerterbuch Woerterbuch_Austausch_Internet_accdb.accdb postgres > Woerterbuch_create-table.sql
 $ mdb-export -D %F Woerterbuch_Austausch_Internet_accdb.accdb Woerterbuch > Woerterbuch.csv
 ```
+
+Note that starting from version 1.0.0 MDB Tools creates lower case table and columns names. The respective configuration file is db-1.properties whereas db-2.properties maps to tables and columns with upper case initial letters.
 
 Create the _"Schluesseltypen"_ and _"Woerterbuch"_ tables in your PostgreSQL database, e.g. in their own _"woerterbuch"_ schema:
 
@@ -44,10 +112,10 @@ sep3=# set datestyle to 'SQL,MDY';
 sep3=# \copy "Woerterbuch" from '/tmp/Woerterbuch.csv' CSV HEADER
 ```
 
-Test your conversion by e.g. retrieving all _"Woerterbuch"_ table entries for the _"PETRO"_ data field:
+Test your conversion by e.g. retrieving all _"Woerterbuch"_ table entries for the _"PETRO"_ data field. Here, table and column names with upper case initial letters are used:
 
 ```
-sep3=# select "Typ", "Langtext" as "Typbezeichnung", "Kuerzel", "Klartext" from "Woerterbuch" w join "Schluesseltypen" s on w."Typ" = s."Nebentypbez" where s."Datenfeld" = 'PETRO' order by "Typ", "Kuerzel";
+sep3=# select "Typ", "Langtext" as "Typbezeichnung", "Kuerzel", "Klartext" from woerterbuch."Woerterbuch" w join woerterbuch."Schluesseltypen" s on w."Typ" = s."Nebentypbez" where s."Datenfeld" = 'PETRO' order by "Typ", "Kuerzel";
      Typ      |                    Typbezeichnung                     | Kuerzel |                     Klartext                     
 --------------+-------------------------------------------------------+---------+--------------------------------------------------
  Ergaenz_Allg | Allgemeine Ergänzungsattribute (Eigenschaften)        | afg     | aufgearbeitet
@@ -135,20 +203,39 @@ SELECT sqlj.install_jar('file:///<PATH_TO_SEP3-TOOLS>/target/sep3-parser-0.0.1-S
 SELECT sqlj.set_classpath('public', 'sep3');
 ```
 
-Verify the installation by executing the function `S3_AsText()`:
-```postgres-sql
-SELECT S3_AsText('^u');
-```
-You can get the description of the function by executing the `\df` command:
+Create the configuration table `sep3tools` which maps the _"Schluesseltypen"_ and _"Woerterbuch"_ tables to the tool by using 00_dbinfo.sql and one of the two properties files db-1.properties or db-2.properties. db-1.properties uses lower case table and column names whereas db-2.properties has upper case initial letters:
 
 ```postgres-sql
-petroparser=# \df *s3_*;
+sep3=# \i /tmp/00_dbinfo.sql
+```
+
+Verify the installation by executing the function `S3_AsText()`:
+```postgres-sql
+SELECT S3_AsText('gr');
+```
+... which should translate to "granitisch" whereas
+
+```postgres-sql
+SELECT S3_AsText('gr', 'FARBE');
+```
+... which should translate to "grau".
+
+The example shows that "PETRO" is used as default value.
+
+
+You can get the description of the available functions by executing the `\df` command:
+
+```postgres-sql
+petroparser=# \df *s3_*
                                                    List of functions
- Schema |   Name    | Result data type  |                          Argument data types                           | Type 
---------+-----------+-------------------+------------------------------------------------------------------------+------
- public | s3_astext | character varying | s3string character varying                                             | func
- public | s3_astext | character varying | s3string character varying, wb character varying, st character varying | func
-(2 rows)
+ Schema |       Name        | Result data type  |                                     Argument data types                                      | Type 
+--------+-------------------+-------------------+----------------------------------------------------------------------------------------------+------
+ public | s3_asbmllitho     | character varying | s3string character varying, sm character varying                                             | func
+ public | s3_astext         | character varying | s3string character varying                                                                   | func
+ public | s3_astext         | character varying | s3string character varying, df character varying                                             | func
+ public | s3_astext         | character varying | s3string character varying, wb character varying, st character varying, df character varying | func
+ public | s3_astext_verbose | character varying | s3string character varying, wb character varying, st character varying, df character varying | func
+(5 rows)
 ```
 
 ## Docker
