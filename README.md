@@ -155,25 +155,20 @@ petroparser=# \df *s3_*;
 
 SEP3-Tools can be used with Docker. Follow the instructions to execute commands on a docker environment:
 
-### Building
+### Pull image
 
-To build SEP3-Tools you need to install a [JDK 11](https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot) and [Apache Maven 3.8.x](https://maven.apache.org/).
-Then run the following command to build the parser:
+Pull the latest image from github:
 
 ```shell
-mvn clean install
+docker pull ghcr.io/lat-lon/sep3-tools:latest
 ```
-
-Build the docker image with
-```shell
-docker build -t sep3tools .
-```
+Replace `latest` with an existing version to pull the docker image of a specific version.
 
 ### Using
 
 Start the container with
 ```shell
-docker run --name sep3tools --rm -e POSTGRES_PASSWORD=postgres sep3tools
+docker run --name sep3tools --rm -e POSTGRES_PASSWORD=postgres ghcr.io/lat-lon/sep3-tools:latest
 ```
 
 Login to the container
@@ -196,4 +191,18 @@ public | s3_astext         | character varying | s3string character varying, df 
 public | s3_astext         | character varying | s3string character varying, wb character varying, st character varying, df character varying | func
 public | s3_astext_verbose | character varying | s3string character varying, wb character varying, st character varying, df character varying | func
 (5 rows)
+```
+
+### Building
+
+To build SEP3-Tools docker image on your own you need to install a [JDK 11](https://adoptium.net/?variant=openjdk11&jvmVariant=hotspot) and [Apache Maven 3.8.x](https://maven.apache.org/).
+Then run the following command to build the parser:
+
+```shell
+mvn clean install
+```
+
+Build the docker image with
+```shell
+docker build -t sep3tools .
 ```
