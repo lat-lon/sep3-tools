@@ -205,6 +205,10 @@ SELECT sqlj.set_classpath('public', 'sep3');
 
 Create the configuration table `sep3tools` which maps the _"Schluesseltypen"_ and _"Woerterbuch"_ tables to the tool by using 00_dbinfo.sql and one of the two properties files db-1.properties or db-2.properties. db-1.properties uses lower case table and column names whereas db-2.properties has upper case initial letters:
 
+You also need to specify connection parameters for your database setup in the properties file you want to use.
+
+In some cases you need to specify the full path to the properties file in 00_dbinfo.sql . It may be best to copy both the properties file and 00_dbinfo.sql to /tmp/ and use them from there:
+
 ```postgres-sql
 sep3=# \i /tmp/00_dbinfo.sql
 ```
