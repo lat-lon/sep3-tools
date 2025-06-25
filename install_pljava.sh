@@ -17,3 +17,4 @@ psql -q -d sep3tools -c "SELECT sqlj.install_jar('file:///opt/sep3-tools/sep3-pa
 psql -q -d sep3tools -c "SELECT sqlj.set_classpath('public', 'sep3');"
 
 psql -q -d sep3tools -f /tmp/importData.sql
+psql -q -d sep3tools -f /tmp/00_dbinfo.sql
