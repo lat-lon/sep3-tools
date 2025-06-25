@@ -83,6 +83,7 @@ public class Launch {
 	@Function
 	public static String S3_AsText(String s3String, String wb, String st, String df) {
 		try {
+			JavaConnector.setPropertiesFromDB();
 			JavaConnector.setWb(wb);
 			JavaConnector.setSt(st);
 			JavaConnector.setDf(df);
@@ -140,10 +141,16 @@ public class Launch {
 	 */
 	@Function
 	public static String S3_AsText_verbose(String s3String, String wb, String st, String df) {
-		JavaConnector.setWb(wb);
-		JavaConnector.setSt(st);
-		JavaConnector.setDf(df);
-		return S3_AsText(s3String);
+		try {
+			JavaConnector.setPropertiesFromDB();
+			JavaConnector.setWb(wb);
+			JavaConnector.setSt(st);
+			JavaConnector.setDf(df);
+			return S3_AsText(s3String);
+		}
+		catch (Exception e) {
+			return "";
+		}
 	}
 
 }

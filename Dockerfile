@@ -27,6 +27,10 @@ RUN unzip /tmp/sep3examples.zip -d /tmp
 COPY ./target/sep3-parser-*-jar-with-dependencies.jar /opt/sep3-tools/sep3-parser.jar
 COPY ./install_pljava.sh /docker-entrypoint-initdb.d/install_pljava.sh
 COPY ./importData.sql /tmp/importData.sql
+COPY ./00_dbinfo.sql /tmp/00_dbinfo.sql
+COPY ./db-2.properties /tmp/db.properties
+
+RUN sed -i "s|'db-1.properties'|'/tmp/db.properties'|g" /tmp/00_dbinfo.sql
 
 RUN mdb-schema -T Schluesseltypen $WBFILENAME postgres > /tmp/Schluesseltypen_create-table.sql
 RUN mdb-export $WBFILENAME Schluesseltypen > /tmp/Schluesseltypen.csv
