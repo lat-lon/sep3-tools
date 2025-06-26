@@ -16,7 +16,7 @@ on:
         default: '1.0.1-SNAPSHOT'
 
 jobs:
-  build:
+  release:
     if: github.ref_name == 'main'
     runs-on: ubuntu-latest
     steps:
@@ -31,10 +31,6 @@ jobs:
       run: mvn -B verify --file pom.xml
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  release:
-    if: success()
-    runs-on: ubuntu-latest
-    steps:
     - name: Create Maven Release
       uses: qcastel/github-actions-maven-release@v1.12.43
       env:
@@ -44,7 +40,6 @@ jobs:
         ssh-passphrase: ${{ secrets.SSH_PASSPHRASE }}
         maven-release-version-number: ${releaseVersion}
         maven-development-version-number: ${developmentVersion}
-    - uses: actions/checkout@v4
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
       with:
