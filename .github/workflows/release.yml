@@ -39,8 +39,8 @@ jobs:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
         ssh-passphrase: ${{ secrets.SSH_PASSPHRASE }}
         release-branch-name: "main"
-        maven-release-version-number: ${releaseVersion}
-        maven-development-version-number: ${developmentVersion}
+        maven-release-version-number: ${{ github.event.inputs.releaseVersion }}
+        maven-development-version-number: ${{ github.event.inputs.developmentVersion }}
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
       with:
