@@ -38,6 +38,7 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
         ssh-passphrase: ${{ secrets.SSH_PASSPHRASE }}
+        release-branch-name: "main"
         maven-release-version-number: ${releaseVersion}
         maven-development-version-number: ${developmentVersion}
     - name: Login to GitHub Container Registry
