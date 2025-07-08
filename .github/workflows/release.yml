@@ -35,6 +35,7 @@ jobs:
       uses: qcastel/github-actions-maven-release@v1.12.43
       env:
         JAVA_HOME: /usr/lib/jvm/java-11-openjdk/
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
         ssh-passphrase: ${{ secrets.SSH_PASSPHRASE }}
