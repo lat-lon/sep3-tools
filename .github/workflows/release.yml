@@ -19,6 +19,9 @@ jobs:
   release:
     if: github.ref_name == 'main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK 11
