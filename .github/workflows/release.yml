@@ -32,16 +32,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Create Maven Release
-      uses: qcastel/github-actions-maven-release@v1.12.43
+      run: mvn -Dresume=false -DreleaseVersion=${{ github.event.inputs.release_version }} -DdevelopmentVersion=${{ github.event.inputs.next_version }} -DdeployAtEnd=true -Dgoals=deploy release:prepare release:perform
       env:
-        JAVA_HOME: /usr/lib/jvm/java-11-openjdk/
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-        ssh-passphrase: ${{ secrets.SSH_PASSPHRASE }}
-        release-branch-name: "main"
-        maven-release-version-number: ${{ github.event.inputs.releaseVersion }}
-        maven-development-version-number: ${{ github.event.inputs.developmentVersion }}
+       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
       with:
