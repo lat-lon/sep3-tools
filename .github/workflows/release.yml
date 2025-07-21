@@ -33,8 +33,8 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Configure Git User
       run: |
-        git config user.email "sep3-tools@github.com"
-        git config user.name "GitHub Action sep3-tools"
+        git config --local user.email "actions@github.com"
+        git config --local user.name "GitHub Actions"
     - name: Create Maven Release
       run: mvn -Dresume=false -DreleaseVersion=${{ github.event.inputs.release_version }} -DdevelopmentVersion=${{ github.event.inputs.next_version }} -DdeployAtEnd=true -Dgoals=deploy release:prepare release:perform
       env:
