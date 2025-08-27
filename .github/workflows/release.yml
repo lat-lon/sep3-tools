@@ -39,7 +39,7 @@ jobs:
         git config --local user.email "sep3tools@github.com"
         git config --local user.name "GitHub Actions"
     - name: Create Maven Release
-      run: mvn -Dresume=false -DreleaseVersion=${{ github.event.inputs.release_version }} -DdevelopmentVersion=${{ github.event.inputs.next_version }} -DdeployAtEnd=true -Dgoals=deploy release:prepare release:perform
+      run: mvn -Dresume=false -DreleaseVersion=${{ github.event.inputs.releaseVersion }} -DdevelopmentVersion=${{ github.event.inputs.developmentVersion }} -DdeployAtEnd=true -Dgoals=deploy release:prepare release:perform
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Login to GitHub Container Registry
