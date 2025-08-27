@@ -4,7 +4,7 @@
 
     <groupId>org.sep3.tools</groupId>
     <artifactId>sep3-parser</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
 
     <name>sep3-parser</name>
@@ -30,7 +30,7 @@
         <connection>scm:git:git@github.com:lat-lon/sep3-tools.git</connection>
         <developerConnection>scm:git:git@github.com:lat-lon/sep3-tools.git</developerConnection>
         <url>https://github.com/lat-lon/sep3-tools</url>
-        <tag>HEAD</tag>
+        <tag>sep3-parser-0.1.0</tag>
     </scm>
 
     <repositories>
