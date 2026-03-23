@@ -13,7 +13,7 @@ LABEL maintainer="lat/lon GmbH <info@lat-lon.de" \
 ARG POSTGRES_VERSION=14
 ARG JDK_VERSION=11
 
-ENV WBFILENAME=/tmp/Woerterbuch_Austausch_Internet_accdb.accdb
+ENV WBFILENAME=/tmp/Woerterbuch_Austausch_Internet.accdb
 
 RUN apt-get update -y && \
    apt-get install --no-install-recommends -y postgresql-${POSTGRES_VERSION}-pljava openjdk-${JDK_VERSION}-jdk mdbtools wget unzip
